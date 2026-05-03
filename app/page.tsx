@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import VENUE_IMG from './../public/assets/img/mandapam.jpg'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
-const WEDDING_DATE = new Date("June 24, 2026 00:00:00").getTime();
+const WEDDING_DATE = new Date("June 24, 2026 08:00:00").getTime();
 const GANESH_IMG   = "https://pub-1953a6673e864f3488c645252f75de98.r2.dev/Shriya%20%26%20Ashutosh/Vianyak%20png.png";
 
 const GOLD   = "#C9A84C";
@@ -651,7 +651,7 @@ export default function Home() {
                 fontFamily: "'Lato', sans-serif",
                 fontSize: 12, color: TMED, lineHeight: 1.8,
               }}>
-                Srinivasa Mandabam · Thammampatti
+                Srinivasa Mandapam · UdayarPalayam, Thammampatti · Salem
               </p>
             </div>
           </div>

@@ -4,13 +4,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Hari 🫶🏻 Dhana",
   description:
-    "With the blessings of the Almighty, we joyfully invite you and your family to the wedding of Dr. Ashish & Dr. Ayushi on 28th April 2026 at Tivoli Lotus Court, Sector 117, Noida.",
+    "With the blessings of the Almighty, we joyfully invite you and your family to the wedding of Hari & Dhana on 24th June 2026 at at Srinivasa Mandapam, Udayarpalayam, Thammampatti.",
   authors: [{ name: "Hari & Dhana" }],
   openGraph: {
     type: "website",
-    title: "Wedding Invitation | Ashish & Ayushi | 24th June 2026",
+    title: "Wedding Invitation | Hari & Dhana | 24th June 2026",
     description:
-      "Join us to celebrate the wedding of Hari & Dhana on 24th April 2026 at Tivoli Lotus Court, Noida.",
+      "Join us to celebrate the wedding of Hari & Dhana on 24th June 2026 at Srinivasa Mandapam, Udayarpalayam, Thammampatti.",
     siteName: "Wedding Invitation | Hari & Dhana",
   },
 };
