@@ -20,12 +20,12 @@ const BORDER = "#E8D9BC";
 
 // ── Ceremony data ──────────────────────────────────────────────────────────────
 const CEREMONIES = [
-  { num: "I",   icon: "✨", name: "Shagun & Shades",         sub: "",                          day: "Mon, 27th Apr" },
-  { num: "II",  icon: "🙏", name: "Parampara & Pratishtha",  sub: "",                          day: "Tue, 28th Apr" },
-  { num: "III", icon: "🎶", name: "Sitaron Wali Shaam",      sub: "A Bollywood Musical Night", day: "Tue, 28th Apr" },
-  { num: "IV",  icon: "💐", name: "Phoolon Ki Mehfil",       sub: "",                          day: "Tue, 28th Apr" },
-  { num: "V",   icon: "💍", name: "Together Forever",        sub: "Shubh Vivah",               day: "Tue, 28th Apr" },
-  { num: "VI",  icon: "🌙", name: "Bheegi Palkein",          sub: "",                          day: "Tue, 28th Apr" },
+  { num: "I",   icon: "✨", name: "Shagun & Shades",         sub: "",                          day: "Tue, 23th Jun" },
+  { num: "II",  icon: "🙏", name: "Parampara & Pratishtha",  sub: "",                          day: "Wed, 24th Jun" },
+  { num: "III", icon: "🎶", name: "Sitaron Wali Shaam",      sub: "A Bollywood Musical Night", day: "Wed, 24th Jun" },
+  { num: "IV",  icon: "💐", name: "Phoolon Ki Mehfil",       sub: "",                          day: "Wed, 24th Jun" },
+  { num: "V",   icon: "💍", name: "Together Forever",        sub: "Shubh Vivah",               day: "Wed, 24th Jun" },
+  { num: "VI",  icon: "🌙", name: "Bheegi Palkein",          sub: "",                          day: "Wed, 24th Jun" },
 ];
 
 const COMPLIMENTS = [
