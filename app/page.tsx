@@ -181,6 +181,7 @@ export default function Home() {
   const audioRef  = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [splashClosing, setSplashClosing] = useState(false);
   const [form, setForm] = useState({
     name: "", phone: "",
     attending:  "",
@@ -320,11 +321,10 @@ export default function Home() {
   }, []);
 
   const openInvitation = () => {
-    setShowSplash(false);
+    setSplashClosing(true);
     const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = 0.5;
-    audio.play().catch(() => {});
+    if (audio) { audio.volume = 0.5; audio.play().catch(() => {}); }
+    setTimeout(() => setShowSplash(false), 2000);
   };
 
   const toggleMusic = () => {
@@ -408,56 +408,87 @@ export default function Home() {
       {showSplash && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 9999,
-          background: CREAM,
-          display: "flex", flexDirection: "column",
-          alignItems: "center", justifyContent: "center",
-          padding: 32, textAlign: "center",
+          overflow: "hidden",
+          pointerEvents: splashClosing ? "none" : "auto",
         }}>
-          <img
-            src={GANESH_IMG}
-            alt="Shri Ganesh"
-            style={{
-              width: 100, height: 100, objectFit: "contain",
-              marginBottom: 24,
-              animation: "float-ganesh 3.8s ease-in-out infinite",
-            }}
-          />
-          <p style={{
-            fontFamily: "'Great Vibes', cursive",
-            fontSize: "clamp(44px, 12vw, 68px)",
-            color: MAROON, lineHeight: 1.2, margin: "0 0 4px",
-          }}>Harikrishnan</p>
-          <p style={{ fontFamily: "'Lato',sans-serif", fontSize: 13, color: TMED, letterSpacing: 2, margin: "6px 0" }}>&amp;</p>
-          <p style={{
-            fontFamily: "'Great Vibes', cursive",
-            fontSize: "clamp(44px, 12vw, 68px)",
-            color: MAROON, lineHeight: 1.2, margin: "0 0 32px",
-          }}>Dhanalakshmi</p>
-          <p style={{
-            fontFamily: "'Cormorant Garant', serif",
-            fontStyle: "italic", fontSize: 15, color: TMED, marginBottom: 36,
+
+          {/* Left curtain panel */}
+          <div style={{
+            position: "absolute", top: 0, left: 0,
+            width: "50%", height: "100%",
+            background: CREAM,
+            transition: "transform 0.8s cubic-bezier(.76,0,.24,1) 0.2s",
+            transform: splashClosing ? "translateX(-101%)" : "translateX(0)",
+          }} />
+
+          {/* Right curtain panel */}
+          <div style={{
+            position: "absolute", top: 0, right: 0,
+            width: "50%", height: "100%",
+            background: CREAM,
+            transition: "transform 0.8s cubic-bezier(.76,0,.24,1) 0.2s",
+            transform: splashClosing ? "translateX(101%)" : "translateX(0)",
+          }} />
+
+          {/* Center content — fades out first */}
+          <div style={{
+            position: "absolute", inset: 0,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            padding: 32, textAlign: "center",
+            zIndex: 2,
+            opacity: splashClosing ? 0 : 1,
+            transform: splashClosing ? "scale(0.94)" : "scale(1)",
+            transition: "opacity 0.25s ease, transform 0.25s ease",
           }}>
-            Wednesday · 24 June 2026
-          </p>
-          <button
-            onClick={openInvitation}
-            style={{
-              background: "#B85940", color: WHITE, border: "none",
-              borderRadius: 50, padding: "16px 48px",
-              fontFamily: "'Lato', sans-serif", fontWeight: 700,
-              fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-              cursor: "pointer", boxShadow: "0 6px 24px rgba(184,89,64,0.4)",
-              transition: "transform 0.15s",
-            }}
-          >
-            Open Invitation
-          </button>
-          <p style={{
-            fontFamily: "'Lato', sans-serif", fontSize: 11,
-            color: TMED, marginTop: 16, opacity: 0.6, letterSpacing: 1,
-          }}>
-            🎵 Music will play
-          </p>
+            <img
+              src={GANESH_IMG}
+              alt="Shri Ganesh"
+              style={{
+                width: 100, height: 100, objectFit: "contain",
+                marginBottom: 20,
+                animation: "float-ganesh 3.8s ease-in-out infinite",
+              }}
+            />
+            <p style={{
+              fontFamily: "'Great Vibes', cursive",
+              fontSize: "clamp(44px, 12vw, 68px)",
+              color: MAROON, lineHeight: 1.2, margin: "0 0 4px",
+            }}>Harikrishnan</p>
+            <p style={{ fontFamily: "'Lato',sans-serif", fontSize: 13, color: TMED, letterSpacing: 2, margin: "6px 0" }}>&amp;</p>
+            <p style={{
+              fontFamily: "'Great Vibes', cursive",
+              fontSize: "clamp(44px, 12vw, 68px)",
+              color: MAROON, lineHeight: 1.2, margin: "0 0 24px",
+            }}>Dhanalakshmi</p>
+            <p style={{
+              fontFamily: "'Cormorant Garant', serif",
+              fontStyle: "italic", fontSize: 15, color: TMED, marginBottom: 32,
+            }}>
+              Wednesday · 24 June 2026
+            </p>
+            <button
+              onClick={openInvitation}
+              style={{
+                background: "#B85940", color: WHITE, border: "none",
+                borderRadius: 50, padding: "16px 48px",
+                fontFamily: "'Lato', sans-serif", fontWeight: 700,
+                fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
+                cursor: "pointer", boxShadow: "0 6px 24px rgba(184,89,64,0.4)",
+                transition: "transform 0.15s, box-shadow 0.15s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
+            >
+              Open Invitation
+            </button>
+            <p style={{
+              fontFamily: "'Lato', sans-serif", fontSize: 11,
+              color: TMED, marginTop: 14, opacity: 0.6, letterSpacing: 1,
+            }}>
+              🎵 Music will play
+            </p>
+          </div>
         </div>
       )}
 
