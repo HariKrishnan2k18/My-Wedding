@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import VENUE_IMG from './../public/assets/img/mandapam.jpg'
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 const WEDDING_DATE = new Date("June 24, 2026 00:00:00").getTime();
 const GANESH_IMG   = "https://pub-1953a6673e864f3488c645252f75de98.r2.dev/Shriya%20%26%20Ashutosh/Vianyak%20png.png";
-const VENUE_IMG    = "https://pub-1953a6673e864f3488c645252f75de98.r2.dev/Ashish%20%26%20Ayushi/Venue.webp";
 
 const GOLD   = "#C9A84C";
 const GOLD_D = "#A07C2A";
@@ -102,6 +102,73 @@ function SectionHead({ title, sub, sub2 }: { title: string; sub?: string; sub2?:
   );
 }
 
+// ── Gallery carousel ───────────────────────────────────────────────────────────
+const GALLERY_IMGS = [
+  "/img/image%201.jpeg",
+  "/img/image%202.jpeg",
+  "/img/image%203.jpeg",
+  "/img/image%204.jpeg",
+];
+
+function PhotoCarousel() {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIdx(p => (p + 1) % GALLERY_IMGS.length), 3500);
+    return () => clearInterval(id);
+  }, []);
+
+  const prev = () => setIdx(p => (p - 1 + GALLERY_IMGS.length) % GALLERY_IMGS.length);
+  const next = () => setIdx(p => (p + 1) % GALLERY_IMGS.length);
+
+  const btnStyle: React.CSSProperties = {
+    position: "absolute", top: "50%", transform: "translateY(-50%)",
+    background: WHITE, border: `1px solid ${BORDER}`,
+    borderRadius: "50%", width: 36, height: 36,
+    cursor: "pointer", fontSize: 20, lineHeight: "1",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    boxShadow: "0 2px 10px rgba(44,32,21,0.12)",
+    color: TMED, zIndex: 2,
+  };
+
+  return (
+    <div className="reveal" style={{ maxWidth: 480, margin: "0 auto", position: "relative", padding: "0 24px" }}>
+      {/* Images */}
+      <div style={{ position: "relative", width: "100%", overflow: "hidden", borderRadius: 8 }}>
+        {GALLERY_IMGS.map((src, i) => (
+          <img
+            key={i} src={src} alt={`Photo ${i + 1}`}
+            style={{
+              position: i === 0 ? "relative" : "absolute",
+              top: 0, left: 0,
+              width: "100%", height: "auto",
+              display: "block",
+              opacity: i === idx ? 1 : 0,
+              transition: "opacity 0.7s ease",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Arrows */}
+      <button onClick={prev} style={{ ...btnStyle, left: 0 }}>‹</button>
+      <button onClick={next} style={{ ...btnStyle, right: 0 }}>›</button>
+
+      {/* Dots */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 18 }}>
+        {GALLERY_IMGS.map((_, i) => (
+          <button key={i} onClick={() => setIdx(i)} style={{
+            width: i === idx ? 22 : 8, height: 8, borderRadius: 4,
+            border: "none", cursor: "pointer", padding: 0,
+            background: i === idx ? GOLD : BORDER,
+            transition: "all 0.3s ease",
+          }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function Home() {
   const [time,       setTime]      = useState({ d: 0, h: 0, m: 0, s: 0 });
@@ -109,7 +176,11 @@ export default function Home() {
   const [submitted,  setSubmitted] = useState(false);
   const [scrollPct,  setScrollPct] = useState(0);
   const [venueY,     setVenueY]    = useState(0);
-  const venueRef = useRef<HTMLElement>(null);
+  const venueRef  = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioRef  = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const [form, setForm] = useState({
     name: "", phone: "",
     attending:  "",
@@ -153,6 +224,115 @@ export default function Home() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Autumn leaves canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+
+    type Leaf = {
+      x: number; y: number; vx: number; vy: number;
+      size: number; rot: number; rotS: number;
+      op: number; col: string;
+      sway: number; swaySpeed: number; swayAmp: number;
+      shape: number;
+    };
+
+    const colors = ["#CC3300","#E05C00","#FF8C00","#C0392B","#D97706","#8B2500","#B45309","#E07B39","#A0522D","#DAA520"];
+
+    const mkLeaf = (): Leaf => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: 0.6 + Math.random() * 1.4,
+      size: 3 + Math.random() * 5,
+      rot: Math.random() * Math.PI * 2,
+      rotS: (Math.random() - 0.5) * 0.04,
+      op: 0.45 + Math.random() * 0.45,
+      col: colors[Math.floor(Math.random() * colors.length)],
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.018 + Math.random() * 0.022,
+      swayAmp: 0.5 + Math.random() * 1.0,
+      shape: 1,
+    });
+
+    const leaves: Leaf[] = Array.from({ length: 16 }, (_, i) => ({ ...mkLeaf(), y: (i / 16) * canvas.height }));
+
+    const drawLeaf = (l: Leaf) => {
+      const s = l.size;
+      ctx.save();
+      ctx.translate(l.x, l.y);
+      ctx.rotate(l.rot);
+      ctx.globalAlpha = l.op;
+      ctx.fillStyle = l.col;
+      ctx.beginPath();
+      // Pointed leaf
+      ctx.moveTo(0, -s);
+      ctx.quadraticCurveTo(s * 0.9, 0, 0, s);
+      ctx.quadraticCurveTo(-s * 0.9, 0, 0, -s);
+      ctx.fill();
+      // Midrib line
+      ctx.strokeStyle = `${l.col}88`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.8);
+      ctx.lineTo(0, s * 0.8);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    let raf: number;
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      leaves.forEach(l => {
+        l.sway += l.swaySpeed;
+        l.x += Math.sin(l.sway) * l.swayAmp + l.vx;
+        l.y += l.vy;
+        l.rot += l.rotS;
+        if (l.y > canvas.height + 30) { Object.assign(l, mkLeaf()); l.y = -30; }
+        drawLeaf(l);
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+
+  // Sync play/pause button icon with actual audio state
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const onPlay  = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    audio.addEventListener("play",  onPlay);
+    audio.addEventListener("pause", onPause);
+    return () => {
+      audio.removeEventListener("play",  onPlay);
+      audio.removeEventListener("pause", onPause);
+    };
+  }, []);
+
+  const openInvitation = () => {
+    setShowSplash(false);
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = 0.5;
+    audio.play().catch(() => {});
+  };
+
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) { audio.pause(); setIsPlaying(false); }
+    else { audio.play().catch(() => {}); }
+  };
 
   // Scroll-reveal — covers all variant classes
   useEffect(() => {
@@ -215,6 +395,91 @@ export default function Home() {
   return (
     <main style={{ background: CREAM, minHeight: "100vh" }}>
 
+      {/* ══ AUTUMN LEAVES ═══════════════════════════════════════════════════ */}
+      <canvas ref={canvasRef} style={{
+        position: "fixed", top: 0, left: 0, zIndex: 10,
+        width: "100%", height: "100%", pointerEvents: "none",
+      }} />
+
+      {/* ══ BACKGROUND MUSIC ════════════════════════════════════════════════ */}
+      <audio ref={audioRef} src="/assets/mp3/music.mp3" loop />
+
+      {/* ══ SPLASH OVERLAY ══════════════════════════════════════════════════ */}
+      {showSplash && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: CREAM,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          padding: 32, textAlign: "center",
+        }}>
+          <img
+            src={GANESH_IMG}
+            alt="Shri Ganesh"
+            style={{
+              width: 100, height: 100, objectFit: "contain",
+              marginBottom: 24,
+              animation: "float-ganesh 3.8s ease-in-out infinite",
+            }}
+          />
+          <p style={{
+            fontFamily: "'Great Vibes', cursive",
+            fontSize: "clamp(44px, 12vw, 68px)",
+            color: MAROON, lineHeight: 1.2, margin: "0 0 4px",
+          }}>Harikrishnan</p>
+          <p style={{ fontFamily: "'Lato',sans-serif", fontSize: 13, color: TMED, letterSpacing: 2, margin: "6px 0" }}>&amp;</p>
+          <p style={{
+            fontFamily: "'Great Vibes', cursive",
+            fontSize: "clamp(44px, 12vw, 68px)",
+            color: MAROON, lineHeight: 1.2, margin: "0 0 32px",
+          }}>Dhanalakshmi</p>
+          <p style={{
+            fontFamily: "'Cormorant Garant', serif",
+            fontStyle: "italic", fontSize: 15, color: TMED, marginBottom: 36,
+          }}>
+            Wednesday · 24 June 2026
+          </p>
+          <button
+            onClick={openInvitation}
+            style={{
+              background: "#B85940", color: WHITE, border: "none",
+              borderRadius: 50, padding: "16px 48px",
+              fontFamily: "'Lato', sans-serif", fontWeight: 700,
+              fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
+              cursor: "pointer", boxShadow: "0 6px 24px rgba(184,89,64,0.4)",
+              transition: "transform 0.15s",
+            }}
+          >
+            Open Invitation
+          </button>
+          <p style={{
+            fontFamily: "'Lato', sans-serif", fontSize: 11,
+            color: TMED, marginTop: 16, opacity: 0.6, letterSpacing: 1,
+          }}>
+            🎵 Music will play
+          </p>
+        </div>
+      )}
+
+      {/* Floating music toggle */}
+      <button
+        onClick={toggleMusic}
+        style={{
+          position: "fixed", bottom: 24, right: 24, zIndex: 998,
+          width: 48, height: 48, borderRadius: "50%",
+          background: "#B85940", border: "none",
+          boxShadow: "0 4px 16px rgba(184,89,64,0.45)",
+          cursor: "pointer", display: "flex",
+          alignItems: "center", justifyContent: "center",
+          fontSize: 20, transition: "transform 0.2s, opacity 0.2s",
+        }}
+        onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.1)")}
+        onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+        title={isPlaying ? "Pause music" : "Play music"}
+      >
+        {isPlaying ? "🔊" : "🔇"}
+      </button>
+
       {/* ══ SCROLL PROGRESS BAR ═════════════════════════════════════════════ */}
       <div style={{
         position: "fixed", top: 0, left: 0, zIndex: 999,
@@ -226,128 +491,141 @@ export default function Home() {
 
 
       {/* ══ HERO ════════════════════════════════════════════════════════════ */}
-      <section style={{ ...WRAP, textAlign: "center", paddingTop: 80, paddingBottom: 52 }}>
+      <section style={{
+        minHeight: "100svh",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "16px 20px",
+      }}>
+        <div style={{
+          maxWidth: 560, width: "100%",
+          background: WHITE,
+          border: `1px solid ${BORDER}`,
+          borderRadius: 24,
+          padding: "28px 28px 32px",
+          boxShadow: "0 8px 40px rgba(44,32,21,0.10)",
+          textAlign: "center",
+        }}>
 
-        {/* Ganesh — floats */}
-        <div className="hi">
-          <img
-            src={GANESH_IMG}
-            alt="Shri Ganesh"
-            style={{
-              width: 130, height: 130, objectFit: "contain",
-              margin: "0 auto 18px",
-              animation: "float-ganesh 3.8s ease-in-out infinite",
-            }}
-          />
-        </div>
-
-        {/* Sanskrit shloka */}
-        <div className="hi">
-          <p style={{
-            fontFamily: "'Cormorant Garant', serif",
-            fontSize: "clamp(13px, 2.6vw, 16px)",
-            color: TMED, lineHeight: 2, marginBottom: 24,
-          }}>
-           அன்பும் அறனும் உடைத்தாயின் இல்வாழ்க்கை <br/>
-           பண்பும் பயனும் அது.
-          </p>
-        </div>
-
-        {/* Intro */}
-        <div className="hi">
-          <p style={{
-            fontFamily: "'Cormorant Garant', serif",
-            fontStyle: "italic",
-            fontSize: "clamp(14px, 2.8vw, 18px)",
-            color: TMED, lineHeight: 2,
-            maxWidth: 540, margin: "0 auto 40px",
-          }}>
-            With the blessings of the Almighty &amp; our respected elders,<br />
-            we joyfully request your gracious presence on the<br />
-            wedding celebration of
-          </p>
-        </div>
-
-        {/* Groom */}
-        <div className="hi">
-          <h1 className="name-glow" style={{
-            fontFamily: "'Great Vibes', cursive",
-            fontSize: "clamp(48px, 8vw, 80px);",
-            fontWeight: 400, color: MAROON, lineHeight: 1, margin: 0,
-          }}>
-            Harikrishnan
-          </h1>
-          <p style={{
-            fontFamily: "'Lato', sans-serif",
-            fontSize: 13, color: TMED, lineHeight: 2.2, marginTop: 6,
-          }}>
-            Son of <strong>Mr. K.A.Thirupathi &amp; Mrs. T.Poongodi</strong><br />
-            <span style={{ fontSize: 12, opacity: 0.7 }}>
-              Grandson of Annamalai-Jayalakshmi &amp; Annamalai-Saroja
-            </span>
-          </p>
-        </div>
-
-        {/* Ampersand divider */}
-        <div className="hi" style={{ margin: "22px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20 }}>
-            <div style={{ height: 1, flex: 1, maxWidth: 80, background: `linear-gradient(to right, transparent, ${GOLD})` }} />
-            <span style={{
-              color: MAROON, fontSize: 30,
-              display: "inline-block",
-              animation: "pulse-heart 1.8s ease infinite",
-            }}>❤</span>
-            <div style={{ height: 1, flex: 1, maxWidth: 80, background: `linear-gradient(to left, transparent, ${GOLD})` }} />
+          {/* Ganesh — floats */}
+          <div className="hi">
+            <img
+              src={GANESH_IMG}
+              alt="Shri Ganesh"
+              style={{
+                width: 80, height: 80, objectFit: "contain",
+                margin: "0 auto",
+                animation: "float-ganesh 3.8s ease-in-out infinite",
+              }}
+            />
           </div>
-        </div>
 
-        {/* Bride */}
-        <div className="hi">
-          <h1 className="name-glow" style={{
-            fontFamily: "'Great Vibes', cursive",
-            fontSize: "clamp(48px, 8vw, 80px);",
-            fontWeight: 400, color: MAROON, lineHeight: 1, margin: 0,
-          }}>
-            Dhanalakshmi
-          </h1>
-          <p style={{
-            fontFamily: "'Lato', sans-serif",
-            fontSize: 13, color: TMED, lineHeight: 2.2, marginTop: 6,
-          }}>
-            Daughter of <strong>Mr. S.Venkatasalam &amp; Mrs. V.Rani</strong><br />
-            <span style={{ fontSize: 12, opacity: 0.7 }}>
-              Granddaughter of Sundara Moorthi - Rajalakshmi &amp; Annamalai - Kanagammal
-            </span>
-          </p>
-        </div>
-
-        {/* Date box */}
-        <div className="hi" style={{ marginTop: 44 }}>
-          <div className="date-box" style={{
-            display: "inline-block",
-            border: `1px solid ${GOLD}`,
-            borderRadius: 12,
-            padding: "24px 48px",
-            background: `${GOLD}09`,
-          }}>
+          {/* Tamil shloka */}
+          <div className="hi">
             <p style={{
               fontFamily: "'Cormorant Garant', serif",
-              fontSize: "clamp(20px, 4vw, 28px)",
-              fontWeight: 600, color: MAROON,
-              marginBottom: 12, letterSpacing: "0.05em",
+              fontSize: 13,
+              color: TMED, lineHeight: 1.8, marginBottom: 12,
             }}>
-              Wednesday · 24 June 2026
-            </p>
-            <p style={{
-              fontFamily: "'Lato', sans-serif",
-              fontSize: 13, color: TMED, lineHeight: 2,
-            }}>
-              Srinivasa Mandabam<br />
-              Thammampatti
+              அன்பும் அறனும் உடைத்தாயின் இல்வாழ்க்கை<br />
+              பண்பும் பயனும் அது.
             </p>
           </div>
-        </div>
 
+          {/* Intro */}
+          <div className="hi">
+            <p style={{
+              fontFamily: "'Cormorant Garant', serif",
+              fontStyle: "italic",
+              fontSize: "clamp(13px, 2.6vw, 16px)",
+              color: TMED, lineHeight: 1.7,
+              maxWidth: 420, margin: "0 auto 16px",
+            }}>
+              With the blessings of the Almighty &amp; our respected elders,
+              we joyfully request your gracious presence on the
+              wedding celebration of
+            </p>
+          </div>
+
+          {/* Groom */}
+          <div className="hi">
+            <h1 className="name-glow" style={{
+              fontFamily: "'Great Vibes', cursive",
+              fontSize: "clamp(38px, 9vw, 58px)",
+              fontWeight: 400, color: MAROON, lineHeight: 1, margin: 0,
+            }}>
+              Harikrishnan
+            </h1>
+            <p style={{
+              fontFamily: "'Lato', sans-serif",
+              fontSize: 12, color: TMED, lineHeight: 1.8, marginTop: 4,
+            }}>
+              Son of <br/> <strong>Mr. K.A.Thirupathi &amp; Mrs. T.Poongodi</strong><br />
+              <span style={{ fontSize: 11, opacity: 0.7 }}>
+                Grandson of Annamalai-Jayalakshmi &amp; Annamalai-Saroja
+              </span>
+            </p>
+          </div>
+
+          {/* Heart divider */}
+          <div className="hi" style={{ margin: "10px 0" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20 }}>
+              <div style={{ height: 1, flex: 1, maxWidth: 80, background: `linear-gradient(to right, transparent, ${GOLD})` }} />
+              <span style={{
+                color: MAROON, fontSize: 24,
+                display: "inline-block",
+                animation: "pulse-heart 1.8s ease infinite",
+              }}>❤</span>
+              <div style={{ height: 1, flex: 1, maxWidth: 80, background: `linear-gradient(to left, transparent, ${GOLD})` }} />
+            </div>
+          </div>
+
+          {/* Bride */}
+          <div className="hi">
+            <h1 className="name-glow" style={{
+              fontFamily: "'Great Vibes', cursive",
+              fontSize: "clamp(38px, 9vw, 58px)",
+              fontWeight: 400, color: MAROON, lineHeight: 1, margin: 0,
+            }}>
+              Dhanalakshmi
+            </h1>
+            <p style={{
+              fontFamily: "'Lato', sans-serif",
+              fontSize: 12, color: TMED, lineHeight: 1.8, marginTop: 4,
+            }}>
+              Daughter of <br/> <strong>Mr. S.Venkatasalam &amp; Mrs. V.Rani</strong><br />
+              <span style={{ fontSize: 11, opacity: 0.7 }}>
+                Granddaughter of Sundara Moorthi - Rajalakshmi &amp; Annamalai - Kanagammal
+              </span>
+            </p>
+          </div>
+
+          {/* Date box */}
+          <div className="hi" style={{ marginTop: 20 }}>
+            <div className="date-box" style={{
+              display: "inline-block",
+              border: `1px solid ${GOLD}`,
+              borderRadius: 12,
+              padding: "16px 36px",
+              background: `${GOLD}09`,
+            }}>
+              <p style={{
+                fontFamily: "'Cormorant Garant', serif",
+                fontSize: "clamp(17px, 3.5vw, 22px)",
+                fontWeight: 600, color: MAROON,
+                marginBottom: 6, letterSpacing: "0.05em",
+              }}>
+                Wednesday · 24 June 2026
+              </p>
+              <p style={{
+                fontFamily: "'Lato', sans-serif",
+                fontSize: 12, color: TMED, lineHeight: 1.8,
+              }}>
+                Srinivasa Mandabam · Thammampatti
+              </p>
+            </div>
+          </div>
+
+        </div>
       </section>
 
       <HRule />
@@ -432,49 +710,7 @@ export default function Home() {
           sub="Our Beautiful Moments"
           sub2="A moment captured in time, forever in our hearts"
         />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(185px, 1fr))",
-            gap: 14,
-          }}
-        >
-          {Array.from({ length: 6 }, (_, i) => (
-            <div
-              key={i}
-              className="reveal hover-lift"
-              style={{
-                background: WHITE,
-                border: `1px solid ${BORDER}`,
-                borderRadius: 4,
-                padding: "8px 8px 28px",
-                boxShadow: "0 3px 14px rgba(44,32,21,0.07)",
-                cursor: "default",
-                transitionDelay: `${i * 0.08}s`,
-              }}
-            >
-              <div style={{
-                background: CREAM2,
-                borderRadius: 2,
-                aspectRatio: "4/5",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}>
-                <span style={{ fontSize: 30, opacity: 0.35 }}>📷</span>
-                <span style={{
-                  fontFamily: "'Lato', sans-serif",
-                  fontSize: 10, color: TMED,
-                  letterSpacing: 1.5, textTransform: "uppercase", opacity: 0.6,
-                }}>
-                  Add Photo
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <PhotoCarousel />
       </section>
 
       <HRule />
@@ -493,37 +729,80 @@ export default function Home() {
               boxShadow: "0 4px 28px rgba(44,32,21,0.08)",
             }}
           >
-            <div style={{ overflow: "hidden", height: 290 }}>
+            {/* Venue photo */}
+            <div style={{ overflow: "hidden", height: 220 }}>
               <img
-                src={VENUE_IMG}
+                src={VENUE_IMG.src}
                 alt="Srinivasa Mandapam"
                 style={{
-                  width: "100%", height: 320, objectFit: "cover",
+                  width: "100%", height: 250, objectFit: "cover",
                   transform: `translateY(${venueY}px)`,
                   willChange: "transform",
                 }}
               />
             </div>
-            <div style={{ padding: "30px 36px", textAlign: "center" }}>
+
+            <div style={{ padding: "24px 24px 28px", textAlign: "center" }}>
+              {/* Venue name in script */}
               <h3 style={{
-                fontFamily: "'Cormorant Garant', serif",
-                fontSize: 28, fontWeight: 600, color: MAROON, marginBottom: 8,
+                fontFamily: "'Great Vibes', cursive",
+                fontSize: "clamp(36px, 10vw, 52px)",
+                fontWeight: 400, color: MAROON,
+                lineHeight: 1.2, marginBottom: 8,
               }}>
                 Srinivasa Mandapam
               </h3>
+
+              {/* Address */}
               <p style={{
-                fontFamily: "'Lato', sans-serif",
-                fontSize: 14, color: TMED, lineHeight: 2, marginBottom: 24,
+                fontFamily: "'Cormorant Garant', serif",
+                fontStyle: "italic",
+                fontSize: 15, color: TMED, lineHeight: 1.7, marginBottom: 20,
               }}>
                 Udayarpalayam, Thammampatti<br />
-                Salem 
+                Salem
               </p>
+
+              {/* Google Maps embed */}
+              <div style={{
+                width: "100%", height: 200,
+                borderRadius: 12, overflow: "hidden",
+                border: `1px solid ${BORDER}`,
+                marginBottom: 20,
+              }}>
+                <iframe
+                  src="https://maps.google.com/maps?q=Srinivasa+Mandapam,+Thammampatti,+Salem&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, display: "block" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+
+              {/* Get Directions — full-width terracotta pill */}
               <a
                 href="https://maps.app.goo.gl/TmqPPJ9rDaq2NxAEA?g_st=ac"
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ display: "block" }}
               >
-                <button className="btn-gold">📍 Get Directions</button>
+                <button style={{
+                  width: "100%",
+                  background: "#B85940",
+                  color: WHITE,
+                  border: "none",
+                  borderRadius: 50,
+                  padding: "15px",
+                  fontFamily: "'Lato', sans-serif",
+                  fontWeight: 700, fontSize: 12,
+                  letterSpacing: 3, textTransform: "uppercase",
+                  cursor: "pointer",
+                  transition: "opacity 0.2s",
+                }}>
+                  GET DIRECTIONS
+                </button>
               </a>
             </div>
           </div>
@@ -589,11 +868,30 @@ export default function Home() {
 
       {/* ══ JOIN THE CELEBRATION — RSVP FORM ════════════════════════════════ */}
       <section style={WRAP}>
-        <SectionHead
-          title="Join the Celebration"
-          sub="Celebrate With Us"
-          sub2="A few fun questions before the big day!"
-        />
+
+        {/* Custom heading */}
+        <div className="reveal" style={{ textAlign: "center", marginBottom: 36 }}>
+          <p style={{
+            fontFamily: "'Lato', sans-serif", fontSize: 10,
+            letterSpacing: 3, textTransform: "uppercase",
+            color: "#B85940", marginBottom: 10,
+          }}>
+            Join the Celebration
+          </p>
+          <h2 style={{
+            fontFamily: "'Great Vibes', cursive",
+            fontSize: "clamp(52px, 14vw, 80px)",
+            color: MAROON, lineHeight: 1.15, margin: "0 0 12px",
+          }}>
+            Celebrate<br />With Us
+          </h2>
+          <p style={{
+            fontFamily: "'Cormorant Garant', serif",
+            fontStyle: "italic", fontSize: 17, color: TMED,
+          }}>
+            A few fun questions before the big day!
+          </p>
+        </div>
 
         {submitted ? (
           <div style={{
@@ -616,62 +914,77 @@ export default function Home() {
           <form
             className="reveal-left"
             onSubmit={e => { e.preventDefault(); setSubmitted(true); }}
-            style={{
-              background: WHITE, border: `1px solid ${BORDER}`,
-              borderRadius: 20, padding: "36px 32px",
-              boxShadow: "0 4px 28px rgba(44,32,21,0.08)",
-              display: "flex", flexDirection: "column", gap: 30,
-            }}
+            style={{ display: "flex", flexDirection: "column", gap: 16 }}
           >
 
             {/* ─ Guest Details ─ */}
-            <div>
-              <p style={secLabel}>Guest Details</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <input
-                  required
-                  placeholder="Your Name"
-                  value={form.name}
-                  onChange={e => sf("name", e.target.value)}
-                  style={inputCss}
-                />
-                <input
-                  placeholder="Phone Number"
-                  value={form.phone}
-                  onChange={e => sf("phone", e.target.value)}
-                  style={inputCss}
-                />
+            <div style={{
+              background: WHITE, border: `1px solid ${BORDER}`,
+              borderRadius: 20, padding: "24px 28px",
+              boxShadow: "0 2px 16px rgba(44,32,21,0.06)",
+            }}>
+              <p style={{
+                fontFamily: "'Cormorant Garant', serif",
+                fontStyle: "italic", fontSize: 20, fontWeight: 600,
+                color: "#B85940", marginBottom: 20,
+              }}>Guest Details</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div>
-                  <p style={fldLabel}>Will you join us?</p>
-                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                    {[
-                      { val: "yes", lbl: "Joyfully Accept 🎉" },
-                      { val: "no",  lbl: "Regrettably Decline" },
-                    ].map(o => (
-                      <label key={o.val} style={{
-                        display: "flex", alignItems: "center", gap: 8,
-                        cursor: "pointer",
-                        fontFamily: "'Lato', sans-serif", fontSize: 14, color: TMED,
-                      }}>
-                        <input
-                          type="radio" name="attending" value={o.val}
-                          checked={form.attending === o.val}
-                          onChange={() => sf("attending", o.val)}
-                          style={{ accentColor: GOLD, width: 16, height: 16 }}
-                        />
-                        {o.lbl}
-                      </label>
-                    ))}
-                  </div>
+                  <p style={{ fontFamily: "'Lato',sans-serif", fontSize: 10, color: TMED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>Your Name</p>
+                  <input
+                    required placeholder="Full name"
+                    value={form.name} onChange={e => sf("name", e.target.value)}
+                    style={{ width:"100%", padding:"10px 0", border:"none", borderBottom:`1px solid ${BORDER}`, background:"transparent", fontFamily:"'Lato',sans-serif", fontSize:14, color:TEXT, outline:"none", boxSizing:"border-box" }}
+                  />
+                </div>
+                <div>
+                  <p style={{ fontFamily: "'Lato',sans-serif", fontSize: 10, color: TMED, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>Phone Number</p>
+                  <input
+                    placeholder="+91 00000 00000"
+                    value={form.phone} onChange={e => sf("phone", e.target.value)}
+                    style={{ width:"100%", padding:"10px 0", border:"none", borderBottom:`1px solid ${BORDER}`, background:"transparent", fontFamily:"'Lato',sans-serif", fontSize:14, color:TEXT, outline:"none", boxSizing:"border-box" }}
+                  />
                 </div>
               </div>
             </div>
 
+            {/* ─ Will you join us? ─ */}
+            <div style={{
+              background: WHITE, border: `1px solid ${BORDER}`,
+              borderRadius: 20, padding: "24px 28px",
+              boxShadow: "0 2px 16px rgba(44,32,21,0.06)",
+            }}>
+              <p style={{
+                fontFamily: "'Cormorant Garant', serif",
+                fontStyle: "italic", fontSize: 20, fontWeight: 600,
+                color: "#B85940", marginBottom: 16,
+              }}>Will you join us?</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {[
+                  { val: "yes", lbl: "JOYFULLY ACCEPT 🎉" },
+                  { val: "no",  lbl: "REGRETTABLY DECLINE" },
+                ].map(o => (
+                  <button key={o.val} type="button" onClick={() => sf("attending", o.val)} style={{
+                    width: "100%", padding: "14px",
+                    background: form.attending === o.val ? MAROON : "transparent",
+                    color: form.attending === o.val ? WHITE : TEXT,
+                    border: `1.5px solid ${form.attending === o.val ? MAROON : BORDER}`,
+                    borderRadius: 8, fontFamily: "'Lato',sans-serif",
+                    fontSize: 12, fontWeight: 700, letterSpacing: 2,
+                    textTransform: "uppercase", cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}>
+                    {o.lbl}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* ─ Party Size ─ */}
-            <div>
-              <p style={secLabel}>Party Size</p>
-              <p style={fldLabel}>Including yourself, how many guests?</p>
-              <select value={form.guests} onChange={e => sf("guests", e.target.value)} style={inputCss}>
+            <div style={{ background:WHITE, border:`1px solid ${BORDER}`, borderRadius:20, padding:"24px 28px", boxShadow:"0 2px 16px rgba(44,32,21,0.06)" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Party Size</p>
+              <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:6 }}>Including yourself, how many guests?</p>
+              <select value={form.guests} onChange={e => sf("guests", e.target.value)} style={{ width:"100%", padding:"10px 0", border:"none", borderBottom:`1px solid ${BORDER}`, background:"transparent", fontFamily:"'Lato',sans-serif", fontSize:14, color:TEXT, outline:"none" }}>
                 <option value="1">1 (Just me)</option>
                 <option value="2">2 Guests</option>
                 <option value="3">3 Guests</option>
@@ -682,75 +995,73 @@ export default function Home() {
             </div>
 
             {/* ─ Events ─ */}
-            <div>
-              <p style={secLabel}>Events You&apos;ll Attend</p>
-              <p style={fldLabel}>Select the days you will be joining us</p>
+            <div style={{ background:WHITE, border:`1px solid ${BORDER}`, borderRadius:20, padding:"24px 28px", boxShadow:"0 2px 16px rgba(44,32,21,0.06)" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Events You&apos;ll Attend</p>
+              <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:12 }}>Select the days you will be joining us</p>
               {[
-                { id: "day1", lbl: "Day 1: Pre-Wedding Festivities", sub: "Monday, 23th June 2026" },
-                { id: "day2", lbl: "Day 2: Wedding Day",             sub: "Tuesday, 24th June 2026" },
+                { id: "day1", lbl: "Day 1: Reception", sub: "Tuesday, 23rd June 2026" },
+                { id: "day2", lbl: "Day 2: Wedding Day", sub: "Wednesday, 24th June 2026" },
               ].map(ev => (
-                <label key={ev.id} style={{
-                  display: "flex", alignItems: "flex-start", gap: 10,
-                  marginBottom: 12, cursor: "pointer",
+                <div key={ev.id} onClick={() => tog(ev.id)} style={{
+                  border: `1px solid ${form.events.includes(ev.id) ? "#B85940" : BORDER}`,
+                  borderRadius: 12, padding: "16px 20px", marginBottom: 10,
+                  cursor: "pointer", background: form.events.includes(ev.id) ? "#B8594008" : "transparent",
+                  transition: "all 0.2s ease",
                 }}>
-                  <input
-                    type="checkbox"
-                    checked={form.events.includes(ev.id)}
-                    onChange={() => tog(ev.id)}
-                    style={{ accentColor: GOLD, width: 16, height: 16, marginTop: 2, flexShrink: 0 }}
-                  />
-                  <div>
-                    <p style={{ fontFamily: "'Lato', sans-serif", fontSize: 14, color: TEXT, marginBottom: 2 }}>
-                      {ev.lbl}
-                    </p>
-                    <p style={{ fontFamily: "'Lato', sans-serif", fontSize: 12, color: TMED }}>
-                      {ev.sub}
-                    </p>
-                  </div>
-                </label>
+                  <p style={{ fontFamily:"'Cormorant Garant',serif", fontSize:16, fontWeight:600, color: form.events.includes(ev.id) ? "#B85940" : TEXT, marginBottom:4 }}>{ev.lbl}</p>
+                  <p style={{ fontFamily:"'Lato',sans-serif", fontSize:12, color:TMED }}>{ev.sub}</p>
+                </div>
               ))}
             </div>
 
             {/* ─ Emotional guess ─ */}
-            <div>
-              <p style={secLabel}>Make a Guess</p>
-              <p style={fldLabel}>Who will get emotional first?</p>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+            <div style={{ background:WHITE, border:`1px solid ${BORDER}`, borderRadius:20, padding:"24px 28px", boxShadow:"0 2px 16px rgba(44,32,21,0.06)" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Make a Guess</p>
+              <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:12 }}>Who will get emotional first?</p>
+              <div style={{ display: "flex", gap: 20, justifyContent: "center", marginBottom: 12 }}>
                 {[
-                  { val: "Hari", lbl: "A: Hari" },
-                  { val: "Dhana", lbl: "B: Dhana" },
-                  { val: "both",   lbl: "Both" },
+                  { val: "Hari",  letter: "H", name: "HARI" },
+                  { val: "Dhana", letter: "D", name: "DHANA" },
+                  { val: "both",  letter: "B", name: "BOTH" },
                 ].map(o => (
-                  <button
-                    key={o.val} type="button"
-                    onClick={() => sf("emotional", o.val)}
-                    className={`pill${form.emotional === o.val ? " active" : ""}`}
-                  >
-                    {o.lbl}
-                  </button>
+                  <div key={o.val} onClick={() => sf("emotional", o.val)} style={{ cursor:"pointer", textAlign:"center" }}>
+                    <div style={{
+                      width: 70, height: 70, borderRadius: "50%",
+                      border: `1.5px solid ${form.emotional === o.val ? "#B85940" : BORDER}`,
+                      background: form.emotional === o.val ? "#B8594015" : "transparent",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      margin: "0 auto 8px", transition: "all 0.2s ease",
+                    }}>
+                      <span style={{ fontFamily:"'Great Vibes',cursive", fontSize:32, color:"#B85940" }}>{o.letter}</span>
+                    </div>
+                    <p style={{ fontFamily:"'Lato',sans-serif", fontSize:9, letterSpacing:2, color:TMED, textTransform:"uppercase" }}>{o.name}</p>
+                  </div>
                 ))}
               </div>
-              <p style={{ fontFamily: "'Lato', sans-serif", fontSize: 12, color: TMED, fontStyle: "italic" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:13, color:TMED, textAlign:"center" }}>
                 Reveal after the wedding 😉
               </p>
             </div>
 
             {/* ─ Mood ─ */}
-            <div>
-              <p style={secLabel}>Your Wedding Mood</p>
-              <p style={fldLabel}>I&apos;m coming for...</p>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div style={{ background:WHITE, border:`1px solid ${BORDER}`, borderRadius:20, padding:"24px 28px", boxShadow:"0 2px 16px rgba(44,32,21,0.06)" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Your Wedding Mood</p>
+              <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:12 }}>I&apos;m coming for...</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {[
                   { val: "food",  lbl: "The Food 🍛" },
                   { val: "dance", lbl: "Dance Floor 💃" },
                   { val: "love",  lbl: "The Love ❤️" },
                   { val: "all",   lbl: "All of It ✨" },
                 ].map(o => (
-                  <button
-                    key={o.val} type="button"
-                    onClick={() => sf("mood", o.val)}
-                    className={`pill${form.mood === o.val ? " active" : ""}`}
-                  >
+                  <button key={o.val} type="button" onClick={() => sf("mood", o.val)} style={{
+                    padding: "20px 14px", textAlign: "left",
+                    border: `1px solid ${form.mood === o.val ? "#B85940" : BORDER}`,
+                    borderRadius: 12, cursor: "pointer",
+                    background: form.mood === o.val ? "#B8594010" : "transparent",
+                    fontFamily: "'Lato',sans-serif", fontSize: 13, color: TEXT,
+                    transition: "all 0.2s ease",
+                  }}>
                     {o.lbl}
                   </button>
                 ))}
@@ -758,15 +1069,15 @@ export default function Home() {
             </div>
 
             {/* ─ Note ─ */}
-            <div>
-              <p style={secLabel}>Leave Us a Note</p>
-              <p style={fldLabel}>Share a wish or memory.</p>
+            <div style={{ background:WHITE, border:`1px solid ${BORDER}`, borderRadius:20, padding:"24px 28px", boxShadow:"0 2px 16px rgba(44,32,21,0.06)" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Leave Us a Note</p>
+              <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:8 }}>Share a wish or memory</p>
               <textarea
-                placeholder="✍️ Write something beautiful..."
+                placeholder="Write something from the heart..."
                 value={form.note}
                 onChange={e => sf("note", e.target.value)}
-                rows={3}
-                style={{ ...inputCss, resize: "vertical" }}
+                rows={4}
+                style={{ width:"100%", padding:"14px", border:`1px solid ${BORDER}`, borderRadius:12, background:CREAM, fontFamily:"'Lato',sans-serif", fontSize:14, color:TEXT, outline:"none", resize:"vertical", boxSizing:"border-box" }}
               />
               <p style={{
                 fontFamily: "'Lato', sans-serif",
@@ -777,15 +1088,15 @@ export default function Home() {
             </div>
 
             {/* ─ Advice ─ */}
-            <div>
-              <p style={secLabel}>Words for Forever</p>
-              <p style={fldLabel}>Advice for married life.</p>
+            <div style={{ background:WHITE, border:`1px solid ${BORDER}`, borderRadius:20, padding:"24px 28px", boxShadow:"0 2px 16px rgba(44,32,21,0.06)" }}>
+              <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Words for Forever</p>
+              <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:8 }}>Advice for married life</p>
               <textarea
-                placeholder="Share your wisdom with the couple..."
+                placeholder="One piece of advice..."
                 value={form.advice}
                 onChange={e => sf("advice", e.target.value)}
-                rows={3}
-                style={{ ...inputCss, resize: "vertical" }}
+                rows={4}
+                style={{ width:"100%", padding:"14px", border:`1px solid ${BORDER}`, borderRadius:12, background:CREAM, fontFamily:"'Lato',sans-serif", fontSize:14, color:TEXT, outline:"none", resize:"vertical", boxSizing:"border-box" }}
               />
             </div>
 
@@ -793,131 +1104,26 @@ export default function Home() {
             <button
               type="submit"
               style={{
-                background: `linear-gradient(135deg, ${GOLD}, ${GOLD_D})`,
+                background: "#B85940",
                 color: WHITE, border: "none",
-                borderRadius: 12, padding: "18px",
-                fontFamily: "'Cormorant Garant', serif",
-                fontWeight: 600, fontSize: 22,
-                letterSpacing: "0.06em", cursor: "pointer",
+                borderRadius: 50, padding: "16px",
+                width: "100%",
+                fontFamily: "'Lato', sans-serif",
+                fontWeight: 700, fontSize: 12,
+                letterSpacing: 3, textTransform: "uppercase",
+                cursor: "pointer",
                 transition: "opacity 0.2s, transform 0.15s",
               }}
               onClick={handleSubmit}
               onMouseEnter={e => { (e.target as HTMLElement).style.opacity = "0.88"; }}
               onMouseLeave={e => { (e.target as HTMLElement).style.opacity = "1"; }}
             >
-              Send Love · Hari &amp; Dhana ♥
+              SEND LOVE
             </button>
 
           </form>
         )}
       </section>
-
-      <HRule />
-
-      {/* ══ WITH COMPLIMENTS FROM ════════════════════════════════════════════ */}
-      <section style={WRAP}>
-        <SectionHead title="With Compliments From" />
-        <div className="reveal" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {COMPLIMENTS.map((name, i) => (
-            <div
-              key={name}
-              className="reveal hover-lift"
-              style={{
-                background: WHITE, border: `1px solid ${BORDER}`,
-                borderRadius: 12, padding: "18px 28px",
-                textAlign: "center",
-                boxShadow: "0 2px 12px rgba(44,32,21,0.05)",
-                transitionDelay: `${i * 0.1}s`,
-              }}
-            >
-              <p style={{
-                fontFamily: "'Cormorant Garant', serif",
-                fontSize: 19, fontWeight: 600, color: MAROON,
-              }}>
-                {name}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <HRule />
-
-      {/* ══ RSVP CONTACTS ═══════════════════════════════════════════════════ */}
-      <section style={{ ...WRAP, textAlign: "center" }}>
-        <SectionHead title="RSVP" />
-        <div
-          className="reveal-right hover-lift"
-          style={{
-            background: WHITE, border: `1px solid ${BORDER}`,
-            borderRadius: 20, padding: "36px 32px",
-            boxShadow: "0 4px 24px rgba(44,32,21,0.08)",
-          }}
-        >
-          {[
-            "Dr. Shri Bhagwan & Dr. Asha Gupta",
-            "Siddhant & Tanu Gupta",
-            "Srishti Gupta",
-          ].map((n, i, arr) => (
-            <div
-              key={n}
-              style={{
-                paddingBottom: 16, marginBottom: 16,
-                borderBottom: i < arr.length - 1 ? `1px solid ${BORDER}` : "none",
-              }}
-            >
-              <p style={{
-                fontFamily: "'Cormorant Garant', serif",
-                fontSize: 19, fontWeight: 600, color: MAROON,
-              }}>
-                {n}
-              </p>
-            </div>
-          ))}
-
-          <div style={{ marginTop: 8 }}>
-            <p style={{
-              fontFamily: "'Great Vibes', cursive",
-              fontSize: 30, color: GOLD_D, marginBottom: 4,
-            }}>
-              Avyukt &amp; Advait
-            </p>
-            <p style={{
-              fontFamily: "'Cormorant Garant', serif",
-              fontStyle: "italic", fontSize: 15, color: TMED, marginBottom: 22,
-            }}>
-              &ldquo;Mere Chacha ki Shaadi mein Jalool Jalool aana&rdquo;
-            </p>
-            <p style={{
-              fontFamily: "'Lato', sans-serif",
-              fontSize: 13, color: TMED, letterSpacing: 0.4,
-            }}>
-              23-24 June, Tue-Wed 2026 · Srinivasa Mandabam, Thammampatti
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ FOOTER ══════════════════════════════════════════════════════════ */}
-      <footer style={{
-        textAlign: "center",
-        padding: "40px 20px 56px",
-        borderTop: `1px solid ${BORDER}`,
-      }}>
-        <p style={{
-          fontFamily: "'Great Vibes', cursive",
-          fontSize: 46, color: MAROON, marginBottom: 6,
-        }}>
-          Thank You!
-        </p>
-        <p style={{
-          fontFamily: "'Cormorant Garant', serif",
-          fontStyle: "italic", fontSize: 17, color: TMED, marginBottom: 24,
-        }}>
-          We can&apos;t wait to celebrate with you!
-        </p>
-      </footer>
-
     </main>
   );
 }
