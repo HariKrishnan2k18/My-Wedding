@@ -11,7 +11,6 @@ const GOLD   = "#C9A84C";
 const GOLD_D = "#A07C2A";
 const MAROON = "#8B2635";
 const CREAM  = "#FDF8F0";
-const CREAM2 = "#F5EDD8";
 const WHITE  = "#FFFFFF";
 const TEXT   = "#2C2015";
 const TMED   = "#6B5B3E";
@@ -28,30 +27,7 @@ const CEREMONIES = [
   { num: "VI",  icon: "🌙", name: "Bheegi Palkein",          sub: "",                          day: "Wed, 24th Jun" },
 ];
 
-const COMPLIMENTS = [
-  "Smt. Neeraja & Late Shri Madan Lal Gupta",
-  "Smt. Sangeeta & Shri Vinod Gupta",
-  "Smt. Rajni & Shri Rajeev Gupta",
-  "Smt. Poonam & Shri Sanjeev Gupta",
-  "Smt. Jyoti & Shri Anil Gupta",
-];
-
 // ── Shared inline-style helpers ────────────────────────────────────────────────
-const inputCss: React.CSSProperties = {
-  width: "100%", padding: "12px 16px",
-  borderRadius: 8, border: `1px solid ${BORDER}`,
-  fontFamily: "'Lato', sans-serif", fontSize: 14,
-  color: TEXT, background: WHITE,
-  outline: "none", boxSizing: "border-box",
-};
-const secLabel: React.CSSProperties = {
-  fontFamily: "'Cormorant Garant', serif",
-  fontSize: 20, fontWeight: 600, color: MAROON, marginBottom: 10,
-};
-const fldLabel: React.CSSProperties = {
-  fontFamily: "'Lato', sans-serif",
-  fontSize: 12, color: TMED, marginBottom: 10, letterSpacing: 0.3,
-};
 const WRAP: React.CSSProperties = { maxWidth: 720, margin: "0 auto", padding: "68px 20px" };
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
@@ -321,11 +297,19 @@ export default function Home() {
   }, []);
 
   const openInvitation = () => {
+    if (splashClosing) return;
     setSplashClosing(true);
     const audio = audioRef.current;
     if (audio) { audio.volume = 0.5; audio.play().catch(() => {}); }
-    setTimeout(() => setShowSplash(false), 2000);
+    setTimeout(() => setShowSplash(false), 2500);
   };
+
+  // Auto-open after 8 seconds
+  useEffect(() => {
+    const t = setTimeout(openInvitation, 8000);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleMusic = () => {
     const audio = audioRef.current;
@@ -406,89 +390,101 @@ export default function Home() {
 
       {/* ══ SPLASH OVERLAY ══════════════════════════════════════════════════ */}
       {showSplash && (
-        <div style={{
-          position: "fixed", inset: 0, zIndex: 9999,
-          overflow: "hidden",
-          pointerEvents: splashClosing ? "none" : "auto",
-        }}>
-
-          {/* Left curtain panel */}
+        <div
+          onClick={openInvitation}
+          style={{
+            position: "fixed", inset: 0, zIndex: 9999,
+            overflow: "hidden",
+            background: "radial-gradient(ellipse at center, #6B1A2A 0%, #2D0610 100%)",
+            pointerEvents: splashClosing ? "none" : "auto",
+            cursor: "pointer",
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+          }}
+        >
+          {/* ── Dark curtains (slide away horizontally) ── */}
           <div style={{
             position: "absolute", top: 0, left: 0,
             width: "50%", height: "100%",
-            background: CREAM,
-            transition: "transform 0.8s cubic-bezier(.76,0,.24,1) 0.2s",
+            background: "linear-gradient(to right, #1E0408, #5A1020)",
+            transition: "transform 0.95s cubic-bezier(.76,0,.24,1) 0.55s",
             transform: splashClosing ? "translateX(-101%)" : "translateX(0)",
+            zIndex: 1,
           }} />
-
-          {/* Right curtain panel */}
           <div style={{
             position: "absolute", top: 0, right: 0,
             width: "50%", height: "100%",
-            background: CREAM,
-            transition: "transform 0.8s cubic-bezier(.76,0,.24,1) 0.2s",
+            background: "linear-gradient(to left, #1E0408, #5A1020)",
+            transition: "transform 0.95s cubic-bezier(.76,0,.24,1) 0.55s",
             transform: splashClosing ? "translateX(101%)" : "translateX(0)",
+            zIndex: 1,
           }} />
 
-          {/* Center content — fades out first */}
+          {/* ── Top content: names ── */}
           <div style={{
-            position: "absolute", inset: 0,
-            display: "flex", flexDirection: "column",
-            alignItems: "center", justifyContent: "center",
-            padding: 32, textAlign: "center",
-            zIndex: 2,
+            position: "relative", zIndex: 2, textAlign: "center",
+            padding: "0 24px 18px", width: "100%",
             opacity: splashClosing ? 0 : 1,
-            transform: splashClosing ? "scale(0.94)" : "scale(1)",
-            transition: "opacity 0.25s ease, transform 0.25s ease",
+            transform: splashClosing ? "translateY(-20px)" : "translateY(0)",
+            transition: "opacity 0.28s ease, transform 0.28s ease",
           }}>
-            <img
-              src={GANESH_IMG}
-              alt="Shri Ganesh"
-              style={{
-                width: 100, height: 100, objectFit: "contain",
-                marginBottom: 20,
-                animation: "float-ganesh 3.8s ease-in-out infinite",
-              }}
-            />
-            <p style={{
-              fontFamily: "'Great Vibes', cursive",
-              fontSize: "clamp(44px, 12vw, 68px)",
-              color: MAROON, lineHeight: 1.2, margin: "0 0 4px",
-            }}>Harikrishnan</p>
-            <p style={{ fontFamily: "'Lato',sans-serif", fontSize: 13, color: TMED, letterSpacing: 2, margin: "6px 0" }}>&amp;</p>
-            <p style={{
-              fontFamily: "'Great Vibes', cursive",
-              fontSize: "clamp(44px, 12vw, 68px)",
-              color: MAROON, lineHeight: 1.2, margin: "0 0 24px",
-            }}>Dhanalakshmi</p>
-            <p style={{
-              fontFamily: "'Cormorant Garant', serif",
-              fontStyle: "italic", fontSize: 15, color: TMED, marginBottom: 32,
-            }}>
+            <img src={GANESH_IMG} alt="Shri Ganesh" style={{
+              width: 72, height: 72, objectFit: "contain",
+              margin: "0 auto 12px",
+              animation: "float-ganesh 3.8s ease-in-out infinite",
+              filter: "brightness(0) invert(1)",
+            }} />
+            <p style={{ fontFamily:"'Great Vibes',cursive", fontSize:"clamp(38px,10vw,60px)", color: GOLD, lineHeight:1.1, margin:0, textShadow:"0 2px 16px rgba(201,168,76,0.45)" }}>
+              Harikrishnan
+            </p>
+            <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:"#E8D9BC", letterSpacing:5, textTransform:"uppercase", margin:"5px 0" }}>
+              Weds
+            </p>
+            <p style={{ fontFamily:"'Great Vibes',cursive", fontSize:"clamp(38px,10vw,60px)", color: GOLD, lineHeight:1.1, margin:"0 0 12px", textShadow:"0 2px 16px rgba(201,168,76,0.45)" }}>
+              Dhanalakshmi
+            </p>
+            <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:14, color:"#E8D9BC" }}>
               Wednesday · 24 June 2026
             </p>
-            <button
-              onClick={openInvitation}
-              style={{
-                background: "#B85940", color: WHITE, border: "none",
-                borderRadius: 50, padding: "16px 48px",
-                fontFamily: "'Lato', sans-serif", fontWeight: 700,
-                fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                cursor: "pointer", boxShadow: "0 6px 24px rgba(184,89,64,0.4)",
-                transition: "transform 0.15s, box-shadow 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; }}
-            >
-              Open Invitation
-            </button>
-            <p style={{
-              fontFamily: "'Lato', sans-serif", fontSize: 11,
-              color: TMED, marginTop: 14, opacity: 0.6, letterSpacing: 1,
-            }}>
-              🎵 Music will play
-            </p>
           </div>
+
+          {/* ── Horizontal Ribbon ── */}
+          <div style={{ position: "relative", zIndex: 3, width: "100%", height: 64, flexShrink: 0 }}>
+            {/* Left ribbon half */}
+            <div style={{
+              position: "absolute", top: 0, left: 0, width: "50%", height: "100%",
+              background: "linear-gradient(to bottom, #AA1500 0%, #EE2200 45%, #FF4422 50%, #EE2200 55%, #AA1500 100%)",
+              transition: "transform 0.48s cubic-bezier(.76,0,.24,1)",
+              transform: splashClosing ? "translateX(-101%)" : "translateX(0)",
+              boxShadow: "inset 0 2px 0 rgba(255,255,255,0.18), inset 0 -2px 0 rgba(0,0,0,0.25)",
+            }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:5, background:"linear-gradient(to right, #A07C2A, #FFE066, #C9A84C, #FFE066, #A07C2A)", opacity:0.9 }} />
+              <div style={{ position:"absolute", bottom:0, left:0, right:0, height:5, background:"linear-gradient(to right, #A07C2A, #FFE066, #C9A84C, #FFE066, #A07C2A)", opacity:0.9 }} />
+            </div>
+            {/* Right ribbon half */}
+            <div style={{
+              position: "absolute", top: 0, right: 0, width: "50%", height: "100%",
+              background: "linear-gradient(to bottom, #AA1500 0%, #EE2200 45%, #FF4422 50%, #EE2200 55%, #AA1500 100%)",
+              transition: "transform 0.48s cubic-bezier(.76,0,.24,1)",
+              transform: splashClosing ? "translateX(101%)" : "translateX(0)",
+              boxShadow: "inset 0 2px 0 rgba(255,255,255,0.18), inset 0 -2px 0 rgba(0,0,0,0.25)",
+            }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:5, background:"linear-gradient(to right, #A07C2A, #FFE066, #C9A84C, #FFE066, #A07C2A)", opacity:0.9 }} />
+              <div style={{ position:"absolute", bottom:0, left:0, right:0, height:5, background:"linear-gradient(to right, #A07C2A, #FFE066, #C9A84C, #FFE066, #A07C2A)", opacity:0.9 }} />
+            </div>
+            {/* ✂ Scissors at center */}
+            <div style={{
+              position: "absolute", top: "50%", left: "50%",
+              fontSize: 34, color: GOLD,
+              filter: "drop-shadow(0 2px 10px rgba(201,168,76,0.7))",
+              animation: splashClosing ? "scissorSnip 0.55s cubic-bezier(.34,1.56,.64,1) forwards" : "ribbonGlow 2s ease-in-out infinite",
+              zIndex: 4,
+              transformOrigin: "center",
+              transform: "translate(-50%, -50%) rotate(-15deg)",
+            }}>✂</div>
+          </div>
+
+      
         </div>
       )}
 
@@ -524,7 +520,7 @@ export default function Home() {
       {/* ══ HERO ════════════════════════════════════════════════════════════ */}
       <section style={{
         minHeight: "100svh",
-        display: "flex", alignItems: "center", justifyContent: "center",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         padding: "16px 20px",
       }}>
         <div style={{
@@ -630,33 +626,35 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Date box */}
-          <div className="hi" style={{ marginTop: 20 }}>
-            <div className="date-box" style={{
-              display: "inline-block",
-              border: `1px solid ${GOLD}`,
-              borderRadius: 12,
-              padding: "16px 36px",
-              background: `${GOLD}09`,
-            }}>
-              <p style={{
-                fontFamily: "'Cormorant Garant', serif",
-                fontSize: "clamp(17px, 3.5vw, 22px)",
-                fontWeight: 600, color: MAROON,
-                marginBottom: 6, letterSpacing: "0.05em",
-              }}>
-                Wednesday · 24 June 2026
-              </p>
-              <p style={{
-                fontFamily: "'Lato', sans-serif",
-                fontSize: 12, color: TMED, lineHeight: 1.8,
-              }}>
-                Srinivasa Mandapam · UdayarPalayam, Thammampatti · Salem
-              </p>
-            </div>
-          </div>
 
         </div>
+
+        {/* Date box — outside card */}
+        <div className="hi" style={{ marginTop: 24, textAlign: "center" }}>
+          <div className="date-box" style={{
+            display: "inline-block",
+            border: `1px solid ${GOLD}`,
+            borderRadius: 12,
+            padding: "16px 36px",
+            background: `${GOLD}09`,
+          }}>
+            <p style={{
+              fontFamily: "'Cormorant Garant', serif",
+              fontSize: "clamp(17px, 3.5vw, 22px)",
+              fontWeight: 600, color: MAROON,
+              marginBottom: 6, letterSpacing: "0.05em",
+            }}>
+              Wednesday · 24 June 2026
+            </p>
+            <p style={{
+              fontFamily: "'Lato', sans-serif",
+              fontSize: 12, color: TMED, lineHeight: 1.8,
+            }}>
+              Srinivasa Mandapam · UdayarPalayam, Thammampatti · Salem
+            </p>
+          </div>
+        </div>
+
       </section>
 
       <HRule />
