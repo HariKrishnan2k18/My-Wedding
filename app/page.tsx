@@ -342,17 +342,7 @@ export default function Home() {
     const handleSubmit = async () => {
   try {
     const payload = {
-      form: {
-        name: "Hari",
-        phone: "9876543210",
-        attending: "yes",
-        guests: "4",
-        events: ["day1"],
-        emotional: "both",
-        mood: "all",
-        note: "ABC",
-        advice: "DEF",
-      },
+      form: form,
     };
 
     const res = await fetch("/api/users", {
