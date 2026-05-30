@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import VENUE_IMG from './../public/assets/img/mandapam.jpg'
+import VENUE_IMG from './../public/assets/img/mandapam.jpg';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 const WEDDING_DATE = new Date("June 24, 2026 08:00:00").getTime();
@@ -20,38 +20,13 @@ const BORDER = "#E8D9BC";
 
 // ── Ceremony data ──────────────────────────────────────────────────────────────
 const CEREMONIES = [
-  { num: "I",   icon: "✨", name: "Shagun & Shades",         sub: "",                          day: "Tue, 23th Jun" },
-  { num: "II",  icon: "🙏", name: "Parampara & Pratishtha",  sub: "",                          day: "Wed, 24th Jun" },
-  { num: "III", icon: "🎶", name: "Sitaron Wali Shaam",      sub: "A Bollywood Musical Night", day: "Wed, 24th Jun" },
-  { num: "IV",  icon: "💐", name: "Phoolon Ki Mehfil",       sub: "",                          day: "Wed, 24th Jun" },
-  { num: "V",   icon: "💍", name: "Together Forever",        sub: "Shubh Vivah",               day: "Wed, 24th Jun" },
-  { num: "VI",  icon: "🌙", name: "Bheegi Palkein",          sub: "",                          day: "Wed, 24th Jun" },
+  { num: "I",   icon: "💐", name: "Nalungu Ceremony at Home",  sub: "",  day: "Wed, 18th Jun", source: "/assets/mp4/Nalungu.mp4"  },
+  { num: "II",   icon: "💐", name: "Marriage Ceremony at Shivan Temple",  sub: "",   day: "Wed, 24th Jun", source: "/assets/mp4/Marriage.mp4" },
+  { num: "III",  icon: "💍", name: "Wedding Reception in Thammampatti",  sub: "",  day: "Wed, 24th Jun", source: "/assets/mp4/Thammampatti_Reception.mp4" },
+  { num: "IV",  icon: "💍", name: "Wedding Reception in Thiruvarur", sub: "", day: "Mon, 29th Jun", source: "/assets/mp4/Thiruvarur_Reception.mp4" },
+
 ];
 
-const COMPLIMENTS = [
-  "Smt. Neeraja & Late Shri Madan Lal Gupta",
-  "Smt. Sangeeta & Shri Vinod Gupta",
-  "Smt. Rajni & Shri Rajeev Gupta",
-  "Smt. Poonam & Shri Sanjeev Gupta",
-  "Smt. Jyoti & Shri Anil Gupta",
-];
-
-// ── Shared inline-style helpers ────────────────────────────────────────────────
-const inputCss: React.CSSProperties = {
-  width: "100%", padding: "12px 16px",
-  borderRadius: 8, border: `1px solid ${BORDER}`,
-  fontFamily: "'Lato', sans-serif", fontSize: 14,
-  color: TEXT, background: WHITE,
-  outline: "none", boxSizing: "border-box",
-};
-const secLabel: React.CSSProperties = {
-  fontFamily: "'Cormorant Garant', serif",
-  fontSize: 20, fontWeight: 600, color: MAROON, marginBottom: 10,
-};
-const fldLabel: React.CSSProperties = {
-  fontFamily: "'Lato', sans-serif",
-  fontSize: 12, color: TMED, marginBottom: 10, letterSpacing: 0.3,
-};
 const WRAP: React.CSSProperties = { maxWidth: 720, margin: "0 auto", padding: "68px 20px" };
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
@@ -792,7 +767,7 @@ export default function Home() {
                 marginBottom: 20,
               }}>
                 <iframe
-                  src="https://maps.google.com/maps?q=Srinivasa+Mandapam,+Thammampatti,+Salem&output=embed"
+                  src="https://maps.google.com/maps?q=11.4470763,78.4860593&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0, display: "block" }}
@@ -853,33 +828,49 @@ export default function Home() {
                 transitionDelay: `${i * 0.1}s`,
               }}
             >
-              <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }}>{c.icon}</span>
-                <div>
-                  <p style={{
-                    fontFamily: "'Lato', sans-serif",
-                    fontSize: 9, color: GOLD_D,
-                    letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 5,
-                  }}>
-                    Ceremony {c.num} · {c.day}
-                  </p>
+              <div style={{ textAlign: "center" }}>
+                <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>{c.icon}</span>
+                <p style={{
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: 9, color: GOLD_D,
+                  letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 6,
+                }}>
+                  Ceremony {c.num} · {c.day}
+                </p>
+                <p style={{
+                  fontFamily: "'Cormorant Garant', serif",
+                  fontSize: 20, fontWeight: 600, color: MAROON,
+                  marginBottom: c.sub ? 4 : 0,
+                }}>
+                  {c.name}
+                </p>
+                {c.sub && (
                   <p style={{
                     fontFamily: "'Cormorant Garant', serif",
-                    fontSize: 20, fontWeight: 600, color: MAROON,
-                    marginBottom: c.sub ? 4 : 0,
+                    fontStyle: "italic", fontSize: 14, color: TMED,
                   }}>
-                    {c.name}
+                    {c.sub}
                   </p>
-                  {c.sub && (
-                    <p style={{
-                      fontFamily: "'Cormorant Garant', serif",
-                      fontStyle: "italic", fontSize: 14, color: TMED,
-                    }}>
-                      {c.sub}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
+              {c.source && (
+                <video
+                  src={c.source}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  style={{
+                    display: "block",
+                    margin: "16px auto 0",
+                    width: "60%",
+                    aspectRatio: "9/16",
+                    objectFit: "cover",
+                    borderRadius: 10,
+                    border: `1px solid ${BORDER}`,
+                  }}
+                />
+              )}
             </div>
           ))}
         </div>
