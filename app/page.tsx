@@ -595,14 +595,21 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Date box */}
-          <div className="hi" style={{ marginTop: 20 }}>
+       
+      
+
+        </div>
+      </section>
+
+         {/* Date box */}
+          <div className="hi reveal" style={{ maxWidth: 720, margin: "0px auto 0", padding: "0 20px" }}>
             <div className="date-box" style={{
-              display: "inline-block",
-              border: `1px solid ${GOLD}`,
-              borderRadius: 12,
-              padding: "16px 36px",
-              background: `${GOLD}09`,
+              background: WHITE,
+              border: `1px solid ${BORDER}`,
+              borderRadius: 16,
+              padding: "24px 26px",
+              boxShadow: "0 2px 16px rgba(44,32,21,0.06)",
+              textAlign: "center",
             }}>
               <p style={{
                 fontFamily: "'Cormorant Garant', serif",
@@ -620,9 +627,6 @@ export default function Home() {
               </p>
             </div>
           </div>
-
-        </div>
-      </section>
 
       <HRule />
 
@@ -863,7 +867,7 @@ export default function Home() {
                   style={{
                     display: "block",
                     margin: "16px auto 0",
-                    width: "60%",
+                    width: "100%",
                     aspectRatio: "9/16",
                     objectFit: "cover",
                     borderRadius: 10,
