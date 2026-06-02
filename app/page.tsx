@@ -1015,8 +1015,9 @@ export default function Home() {
               <p style={{ fontFamily:"'Cormorant Garant',serif", fontStyle:"italic", fontSize:20, fontWeight:600, color:"#B85940", marginBottom:16 }}>Events You&apos;ll Attend</p>
               <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:12 }}>Select the days you will be joining us</p>
               {[
-                { id: "day1", lbl: "Day 1: Reception", sub: "Tuesday, 23rd June 2026" },
-                { id: "day2", lbl: "Day 2: Wedding Day", sub: "Wednesday, 24th June 2026" },
+                { id: "day1", lbl: "Wedding Day", sub: "Wednesday, 24th June 2026" },
+                { id: "day1", lbl: "Reception in Thammampatti", sub: "Wednesday, 24rd June 2026" },
+                { id: "day2", lbl: "Reception in Thiruvarur", sub: "Wednesday, 24rd June 2026" },
               ].map(ev => (
                 <div key={ev.id} onClick={() => tog(ev.id)} style={{
                   border: `1px solid ${form.events.includes(ev.id) ? "#B85940" : BORDER}`,
