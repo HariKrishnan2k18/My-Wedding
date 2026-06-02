@@ -1017,7 +1017,7 @@ export default function Home() {
               {[
                 { id: "day1", lbl: "Wedding Day", sub: "Wednesday, 24th June 2026" },
                 { id: "day1.5", lbl: "Reception in Thammampatti", sub: "Wednesday, 24rd June 2026" },
-                { id: "day2", lbl: "Reception in Thiruvarur", sub: "Wednesday, 24rd June 2026" },
+                { id: "day2", lbl: "Reception in Thiruvarur", sub: "Wednesday, 29th June 2026" },
               ].map(ev => (
                 <div key={ev.id} onClick={() => tog(ev.id)} style={{
                   border: `1px solid ${form.events.includes(ev.id) ? "#B85940" : BORDER}`,
