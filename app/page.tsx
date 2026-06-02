@@ -1016,7 +1016,7 @@ export default function Home() {
               <p style={{ fontFamily:"'Lato',sans-serif", fontSize:10, color:TMED, letterSpacing:2, textTransform:"uppercase", marginBottom:12 }}>Select the days you will be joining us</p>
               {[
                 { id: "day1", lbl: "Wedding Day", sub: "Wednesday, 24th June 2026" },
-                { id: "day1", lbl: "Reception in Thammampatti", sub: "Wednesday, 24rd June 2026" },
+                { id: "day1.5", lbl: "Reception in Thammampatti", sub: "Wednesday, 24rd June 2026" },
                 { id: "day2", lbl: "Reception in Thiruvarur", sub: "Wednesday, 24rd June 2026" },
               ].map(ev => (
                 <div key={ev.id} onClick={() => tog(ev.id)} style={{
