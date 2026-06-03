@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://harikrishnan-weds-dhana.netlify.app"),
   title: "Hari 🫶🏻 Dhana",
   description:
     "With the blessings of the Almighty, we joyfully invite you and your family to the wedding of Hari & Dhana on 24th June 2026 at Srinivasa Mandapam, Udayarpalayam, Thammampatti.",
@@ -15,10 +16,10 @@ export const metadata: Metadata = {
     siteName: "Wedding Invitation | Hari & Dhana",
     images: [
       {
-        url: "https://harikrishnan-weds-dhana.netlify.app/assets/Invitation%20Card.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Hari & Dhana Wedding Invitation – 24th June 2026",
+        alt: "Hari & Dhana Wedding Invitation - 24th June 2026",
       },
     ],
   },
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     title: "Wedding Invitation | Hari & Dhana | 24th June 2026",
     description:
       "Join us to celebrate the wedding of Hari & Dhana on 24th June 2026 at Srinivasa Mandapam, Udayarpalayam, Thammampatti.",
-    images: ["https://harikrishnan-weds-dhana.netlify.app/assets/Invitation%20Card.png"],
+    images: ["/og-image.png"],
   },
 };
 
