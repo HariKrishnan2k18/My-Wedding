@@ -11,7 +11,6 @@ const GOLD   = "#C9A84C";
 const GOLD_D = "#A07C2A";
 const MAROON = "#8B2635";
 const CREAM  = "#FDF8F0";
-const CREAM2 = "#F5EDD8";
 const WHITE  = "#FFFFFF";
 const TEXT   = "#2C2015";
 const TMED   = "#6B5B3E";
@@ -601,32 +600,405 @@ export default function Home() {
         </div>
       </section>
 
-         {/* Date box */}
+         {/* Date box — full event schedule */}
           <div className="hi reveal" style={{ maxWidth: 720, margin: "0px auto 0", padding: "0 20px" }}>
             <div className="date-box" style={{
-              background: WHITE,
+              background: "linear-gradient(160deg, #FFFAF3 0%, #FDF3E3 100%)",
               border: `1px solid ${BORDER}`,
-              borderRadius: 16,
-              padding: "24px 26px",
-              boxShadow: "0 2px 16px rgba(44,32,21,0.06)",
-              textAlign: "center",
+              borderRadius: 20,
+              overflow: "hidden",
+              boxShadow: "0 4px 32px rgba(44,32,21,0.10)",
             }}>
-              <p style={{
-                fontFamily: "'Cormorant Garant', serif",
-                fontSize: "clamp(17px, 3.5vw, 22px)",
-                fontWeight: 600, color: MAROON,
-                marginBottom: 6, letterSpacing: "0.05em",
-              }}>
-                Wednesday · 24 June 2026
-              </p>
-              <p style={{
-                fontFamily: "'Lato', sans-serif",
-                fontSize: 12, color: TMED, lineHeight: 1.8,
-              }}>
-                Srinivasa Mandapam · UdayarPalayam, Thammampatti · Salem
-              </p>
+
+              {/* Top gold accent strip */}
+              <div style={{
+                height: 4,
+                background: `linear-gradient(90deg, transparent, ${GOLD}, ${MAROON}, ${GOLD}, transparent)`,
+              }} />
+
+              <div style={{ padding: "28px 24px 28px" }}>
+
+                {/* ── June 24 date badge ── */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, transparent, ${BORDER})` }} />
+                  <div style={{
+                    background: MAROON,
+                    borderRadius: 50,
+                    padding: "6px 18px",
+                    display: "flex", alignItems: "center", gap: 8,
+                  }}>
+                    <span style={{ fontSize: 13 }}>📅</span>
+                    <span style={{
+                      fontFamily: "'Lato', sans-serif",
+                      fontWeight: 700, fontSize: 11,
+                      letterSpacing: 1.5, textTransform: "uppercase",
+                      color: WHITE,
+                    }}>Wed · 24 June 2026</span>
+                  </div>
+                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${BORDER}, transparent)` }} />
+                </div>
+
+                {/* Events — timeline */}
+                <div style={{ position: "relative", paddingLeft: 28, marginBottom: 24 }}>
+                  {/* vertical timeline line */}
+                  <div style={{
+                    position: "absolute", left: 10, top: 16, bottom: 16,
+                    width: 2,
+                    background: `linear-gradient(180deg, ${GOLD}, ${MAROON}, ${GOLD})`,
+                    borderRadius: 2,
+                  }} />
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {/* Marriage */}
+                    <div style={{
+                      background: WHITE,
+                      borderRadius: 14,
+                      padding: "14px 16px",
+                      border: `1px solid ${BORDER}`,
+                      boxShadow: "0 2px 8px rgba(44,32,21,0.05)",
+                      display: "flex", alignItems: "flex-start", gap: 14,
+                      position: "relative",
+                    }}>
+                      {/* dot on timeline */}
+                      <div style={{
+                        position: "absolute", left: -24, top: 16,
+                        width: 10, height: 10, borderRadius: "50%",
+                        background: GOLD, border: `2px solid ${WHITE}`,
+                        boxShadow: `0 0 0 2px ${GOLD}`,
+                      }} />
+                      <div style={{
+                        width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                        background: "linear-gradient(135deg, #FFF0E0, #FFD9B0)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 18,
+                      }}>🪔</div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{
+                          fontFamily: "'Lato', sans-serif",
+                          fontWeight: 800, fontSize: 10,
+                          letterSpacing: 2, textTransform: "uppercase",
+                          color: MAROON, margin: "0 0 4px",
+                        }}>Marriage Ceremony</p>
+                        <span style={{
+                          display: "inline-block",
+                          fontFamily: "'Lato', sans-serif",
+                          fontSize: 10, fontWeight: 700,
+                          color: WHITE, background: MAROON,
+                          borderRadius: 50, padding: "2px 10px",
+                          marginBottom: 6,
+                        }}>4:00 AM – 6:00 AM</span>
+                        <p style={{
+                          fontFamily: "'Cormorant Garant', serif",
+                          fontSize: 16, fontWeight: 600,
+                          color: "#3A2015", margin: "0 0 1px",
+                        }}>Sivan Temple</p>
+                        <p style={{
+                          fontFamily: "'Lato', sans-serif",
+                          fontSize: 11, color: TMED, margin: 0,
+                        }}>Thammampatti · Salem</p>
+                      </div>
+                    </div>
+
+                    {/* Reception June 24 */}
+                    <div style={{
+                      background: WHITE,
+                      borderRadius: 14,
+                      padding: "14px 16px",
+                      border: `1px solid ${BORDER}`,
+                      boxShadow: "0 2px 8px rgba(44,32,21,0.05)",
+                      display: "flex", alignItems: "flex-start", gap: 14,
+                      position: "relative",
+                    }}>
+                      <div style={{
+                        position: "absolute", left: -24, top: 16,
+                        width: 10, height: 10, borderRadius: "50%",
+                        background: GOLD, border: `2px solid ${WHITE}`,
+                        boxShadow: `0 0 0 2px ${GOLD}`,
+                      }} />
+                      <div style={{
+                        width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                        background: "linear-gradient(135deg, #FFF0F0, #FFD0D0)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 18,
+                      }}>🌸</div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{
+                          fontFamily: "'Lato', sans-serif",
+                          fontWeight: 800, fontSize: 10,
+                          letterSpacing: 2, textTransform: "uppercase",
+                          color: MAROON, margin: "0 0 4px",
+                        }}>Reception</p>
+                        <span style={{
+                          display: "inline-block",
+                          fontFamily: "'Lato', sans-serif",
+                          fontSize: 10, fontWeight: 700,
+                          color: WHITE, background: MAROON,
+                          borderRadius: 50, padding: "2px 10px",
+                          marginBottom: 6,
+                        }}>8:00 AM – 11:00 AM</span>
+                        <p style={{
+                          fontFamily: "'Cormorant Garant', serif",
+                          fontSize: 16, fontWeight: 600,
+                          color: "#3A2015", margin: "0 0 1px",
+                        }}>Srinivasa Mandapam</p>
+                        <p style={{
+                          fontFamily: "'Lato', sans-serif",
+                          fontSize: 11, color: TMED, margin: 0,
+                        }}>Thammampatti · Salem</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gold ornamental divider */}
+                <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "4px 0 24px" }}>
+                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, transparent, ${GOLD_D})` }} />
+                  <span style={{ color: GOLD, fontSize: 14, letterSpacing: 6 }}>✦ ✦ ✦</span>
+                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${GOLD_D}, transparent)` }} />
+                </div>
+
+                {/* ── June 29 date badge ── */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, transparent, ${BORDER})` }} />
+                  <div style={{
+                    background: MAROON,
+                    borderRadius: 50,
+                    padding: "6px 18px",
+                    display: "flex", alignItems: "center", gap: 8,
+                  }}>
+                    <span style={{ fontSize: 13 }}>📅</span>
+                    <span style={{
+                      fontFamily: "'Lato', sans-serif",
+                      fontWeight: 700, fontSize: 11,
+                      letterSpacing: 1.5, textTransform: "uppercase",
+                      color: WHITE,
+                    }}>Mon · 29 June 2026</span>
+                  </div>
+                  <div style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${BORDER}, transparent)` }} />
+                </div>
+
+                {/* Events — June 29 */}
+                <div style={{ position: "relative", paddingLeft: 28 }}>
+                  <div style={{
+                    position: "absolute", left: 10, top: 16, bottom: 16,
+                    width: 2,
+                    background: `linear-gradient(180deg, ${GOLD}, ${MAROON})`,
+                    borderRadius: 2,
+                  }} />
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {/* Reception June 29 */}
+                    <div style={{
+                      background: WHITE,
+                      borderRadius: 14,
+                      padding: "14px 16px",
+                      border: `1px solid ${BORDER}`,
+                      boxShadow: "0 2px 8px rgba(44,32,21,0.05)",
+                      display: "flex", alignItems: "flex-start", gap: 14,
+                      position: "relative",
+                    }}>
+                      <div style={{
+                        position: "absolute", left: -24, top: 16,
+                        width: 10, height: 10, borderRadius: "50%",
+                        background: GOLD, border: `2px solid ${WHITE}`,
+                        boxShadow: `0 0 0 2px ${GOLD}`,
+                      }} />
+                      <div style={{
+                        width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                        background: "linear-gradient(135deg, #FFF0F0, #FFD0D0)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 18,
+                      }}>🌸</div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{
+                          fontFamily: "'Lato', sans-serif",
+                          fontWeight: 800, fontSize: 10,
+                          letterSpacing: 2, textTransform: "uppercase",
+                          color: MAROON, margin: "0 0 4px",
+                        }}>Reception</p>
+                        <span style={{
+                          display: "inline-block",
+                          fontFamily: "'Lato', sans-serif",
+                          fontSize: 10, fontWeight: 700,
+                          color: WHITE, background: MAROON,
+                          borderRadius: 50, padding: "2px 10px",
+                          marginBottom: 6,
+                        }}>6:00 PM – 8:00 PM</span>
+                        <p style={{
+                          fontFamily: "'Cormorant Garant', serif",
+                          fontSize: 16, fontWeight: 600,
+                          color: "#3A2015", margin: "0 0 1px",
+                        }}>Selves Hotel · Diamond Hall</p>
+                        <p style={{
+                          fontFamily: "'Lato', sans-serif",
+                          fontSize: 11, color: TMED, margin: 0,
+                        }}>Near Old Bus Stand · Thiruvarur · 610001</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom gold accent strip */}
+              <div style={{
+                height: 4,
+                background: `linear-gradient(90deg, transparent, ${GOLD}, ${MAROON}, ${GOLD}, transparent)`,
+              }} />
+
             </div>
           </div>
+
+      <HRule />
+
+      {/* ══ INVITATION ══════════════════════════════════════════════════════ */}
+      <section style={{ ...WRAP, background: "linear-gradient(180deg, #FDF8F0 0%, #F5EDD8 100%)", borderRadius: 24, padding: "40px 20px" }}>
+        <SectionHead title="Our Invitation" sub="You Are Cordially Invited" sub2="Save this invitation and join us on our special day" />
+
+        <div className="reveal-scale" style={{ maxWidth: 340, margin: "0 auto" }}>
+          {/* Outer glow ring */}
+          <div style={{
+            borderRadius: 28,
+            padding: 3,
+            background: `linear-gradient(135deg, ${GOLD}, ${MAROON}, ${GOLD}, #E8C890, ${GOLD})`,
+            boxShadow: `0 0 0 6px rgba(201,168,76,0.12), 0 16px 60px rgba(44,32,21,0.20)`,
+          }}>
+            <div style={{
+              borderRadius: 26,
+              overflow: "hidden",
+              background: `linear-gradient(160deg, #FFFAF3 0%, #FDF3E3 100%)`,
+            }}>
+
+              {/* Header band */}
+              <div style={{
+                background: `linear-gradient(135deg, ${MAROON} 0%, #6B1826 100%)`,
+                padding: "14px 20px 10px",
+                textAlign: "center",
+                position: "relative",
+                overflow: "hidden",
+              }}>
+                {/* Subtle shimmer line */}
+                <div style={{
+                  position: "absolute", top: 0, left: 0, right: 0, height: 2,
+                  background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
+                }} />
+                <p style={{
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: 9, fontWeight: 700,
+                  letterSpacing: 4, textTransform: "uppercase",
+                  color: GOLD, margin: "0 0 4px",
+                }}>✦ Marriage Invitation ✦</p>
+                <p style={{
+                  fontFamily: "'Great Vibes', cursive",
+                  fontSize: 28, color: WHITE,
+                  margin: 0, lineHeight: 1.1,
+                }}>Harikrishnan &amp; Dhanalakshmi</p>
+              </div>
+
+              {/* Invitation image with decorative frame */}
+              <div style={{ padding: "18px 18px 10px", position: "relative" }}>
+                {/* Corner ornaments */}
+                {(["top:0,left:0", "top:0,right:0", "bottom:10px,left:0", "bottom:10px,right:0"] as const).map((pos, i) => {
+                  const [v, h] = pos.split(",");
+                  const [vk, vv] = v.split(":");
+                  const [hk, hv] = h.split(":");
+                  const rotate = ["0deg","90deg","270deg","180deg"][i];
+                  return (
+                    <div key={i} style={{
+                      position: "absolute",
+                      [vk]: vv, [hk]: hv,
+                      width: 28, height: 28,
+                      transform: `rotate(${rotate})`,
+                      zIndex: 2, pointerEvents: "none",
+                    }}>
+                      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 26 L2 2 L26 2" stroke={GOLD} strokeWidth="2" strokeLinecap="round"/>
+                        <circle cx="2" cy="2" r="2.5" fill={GOLD}/>
+                      </svg>
+                    </div>
+                  );
+                })}
+                <div style={{
+                  borderRadius: 14, overflow: "hidden",
+                  boxShadow: `0 4px 24px rgba(44,32,21,0.18), 0 0 0 1px ${BORDER}`,
+                }}>
+                  <img
+                    src="/assets/Invitation Card.png"
+                    alt="Marriage Invitation"
+                    style={{ width: "100%", display: "block" }}
+                  />
+                </div>
+              </div>
+
+              {/* Date & venue row */}
+              <div style={{ textAlign: "center", padding: "4px 20px 14px" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
+                  <div style={{ height: 1, width: 40, background: `linear-gradient(90deg, transparent, ${GOLD})` }} />
+                  <span style={{ color: GOLD, fontSize: 10 }}>✦</span>
+                  <p style={{
+                    fontFamily: "'Cormorant Garant', serif",
+                    fontSize: 15, fontStyle: "italic",
+                    fontWeight: 600, color: MAROON, margin: 0,
+                  }}>Wednesday, 24 June 2026</p>
+                  <span style={{ color: GOLD, fontSize: 10 }}>✦</span>
+                  <div style={{ height: 1, width: 40, background: `linear-gradient(90deg, ${GOLD}, transparent)` }} />
+                </div>
+                <p style={{
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: 10, fontWeight: 600,
+                  letterSpacing: 2.5, textTransform: "uppercase",
+                  color: TMED, margin: 0,
+                }}>Thammampatti · Salem</p>
+              </div>
+
+              {/* Buttons */}
+              <div style={{ padding: "0 16px 20px", display: "flex", gap: 10 }}>
+                <a
+                  href="/assets/Hari_weds_Dhana_Marriage_Invitation.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ flex: 1, textDecoration: "none" }}
+                >
+                  <button style={{
+                    width: "100%",
+                    background: `linear-gradient(135deg, ${MAROON}, #6B1826)`,
+                    color: WHITE,
+                    border: "none", borderRadius: 50, padding: "13px 8px",
+                    fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 10,
+                    letterSpacing: 2, textTransform: "uppercase", cursor: "pointer",
+                    boxShadow: "0 4px 16px rgba(139,38,53,0.35)",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                  }}>
+                    <span>📖</span> View
+                  </button>
+                </a>
+                <a
+                  href="/assets/Hari_weds_Dhana_Marriage_Invitation.pdf"
+                  download="Hari_weds_Dhana_Marriage_Invitation.pdf"
+                  style={{ flex: 1, textDecoration: "none" }}
+                >
+                  <button style={{
+                    width: "100%",
+                    background: "transparent", color: MAROON,
+                    border: `1.5px solid ${MAROON}`, borderRadius: 50, padding: "11px 8px",
+                    fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 10,
+                    letterSpacing: 2, textTransform: "uppercase", cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                  }}>
+                    <span>⬇</span> Save
+                  </button>
+                </a>
+              </div>
+
+              {/* Gold footer band */}
+              <div style={{
+                height: 6,
+                background: `linear-gradient(90deg, transparent, ${GOLD}, ${MAROON}, ${GOLD}, transparent)`,
+              }} />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <HRule />
 
@@ -717,95 +1089,220 @@ export default function Home() {
 
       {/* ══ WHERE LOVE AWAITS — VENUE ════════════════════════════════════════ */}
       <section style={WRAP} ref={venueRef}>
-        <SectionHead title="Where Love Awaits" sub="Our Cherished Venue" />
-        <div className="reveal-scale">
-          <div
-            className="hover-lift"
-            style={{
-              background: WHITE,
-              border: `1px solid ${BORDER}`,
-              borderRadius: 20,
-              overflow: "hidden",
-              boxShadow: "0 4px 28px rgba(44,32,21,0.08)",
-            }}
-          >
-            {/* Venue photo */}
-            <div style={{ overflow: "hidden", height: 220 }}>
-              <img
-                src={VENUE_IMG.src}
-                alt="Srinivasa Mandapam"
-                style={{
-                  width: "100%", height: 250, objectFit: "cover",
-                  transform: `translateY(${venueY}px)`,
-                  willChange: "transform",
-                }}
-              />
-            </div>
+        <SectionHead title="Where Love Awaits" sub="Our Cherished Venues" />
 
-            <div style={{ padding: "24px 24px 28px", textAlign: "center" }}>
-              {/* Venue name in script */}
-              <h3 style={{
-                fontFamily: "'Great Vibes', cursive",
-                fontSize: "clamp(36px, 10vw, 52px)",
-                fontWeight: 400, color: MAROON,
-                lineHeight: 1.2, marginBottom: 8,
-              }}>
-                Srinivasa Mandapam
-              </h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
-              {/* Address */}
-              <p style={{
-                fontFamily: "'Cormorant Garant', serif",
-                fontStyle: "italic",
-                fontSize: 15, color: TMED, lineHeight: 1.7, marginBottom: 20,
-              }}>
-                Udayarpalayam, Thammampatti<br />
-                Salem
-              </p>
-
-              {/* Google Maps embed */}
-              <div style={{
-                width: "100%", height: 200,
-                borderRadius: 12, overflow: "hidden",
+          {/* ── Venue 1 — Srinivasa Mandapam ── */}
+          <div className="reveal-scale">
+            <div
+              className="hover-lift"
+              style={{
+                background: WHITE,
                 border: `1px solid ${BORDER}`,
-                marginBottom: 20,
-              }}>
-                <iframe
-                  src="https://maps.google.com/maps?q=11.4470763,78.4860593&output=embed"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0, display: "block" }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
+                borderRadius: 20,
+                overflow: "hidden",
+                boxShadow: "0 4px 28px rgba(44,32,21,0.08)",
+              }}
+            >
+              {/* Venue photo */}
+              <div style={{ overflow: "hidden", height: 220 }}>
+                <img
+                  src={VENUE_IMG.src}
+                  alt="Srinivasa Mandapam"
+                  style={{
+                    width: "100%", height: 250, objectFit: "cover",
+                    transform: `translateY(${venueY}px)`,
+                    willChange: "transform",
+                  }}
                 />
               </div>
 
-              {/* Get Directions — full-width terracotta pill */}
-              <a
-                href="https://maps.app.goo.gl/TmqPPJ9rDaq2NxAEA?g_st=ac"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: "block" }}
-              >
-                <button style={{
-                  width: "100%",
-                  background: "#B85940",
-                  color: WHITE,
-                  border: "none",
-                  borderRadius: 50,
-                  padding: "15px",
+              <div style={{ padding: "24px 24px 28px", textAlign: "center" }}>
+                {/* Date badge */}
+                <div style={{
+                  display: "inline-block",
+                  background: MAROON, color: WHITE,
+                  borderRadius: 50, padding: "4px 14px",
                   fontFamily: "'Lato', sans-serif",
-                  fontWeight: 700, fontSize: 12,
-                  letterSpacing: 3, textTransform: "uppercase",
-                  cursor: "pointer",
-                  transition: "opacity 0.2s",
+                  fontSize: 10, fontWeight: 700,
+                  letterSpacing: 2, textTransform: "uppercase",
+                  marginBottom: 10,
+                }}>24 June 2026</div>
+
+                {/* Venue name */}
+                <h3 style={{
+                  fontFamily: "'Great Vibes', cursive",
+                  fontSize: "clamp(36px, 10vw, 52px)",
+                  fontWeight: 400, color: MAROON,
+                  lineHeight: 1.2, marginBottom: 8,
                 }}>
-                  GET DIRECTIONS
-                </button>
-              </a>
+                  Srinivasa Mandapam
+                </h3>
+
+                {/* Address */}
+                <p style={{
+                  fontFamily: "'Cormorant Garant', serif",
+                  fontStyle: "italic",
+                  fontSize: 15, color: TMED, lineHeight: 1.7, marginBottom: 14,
+                }}>
+                  Udayarpalayam, Thammampatti<br />
+                  Salem
+                </p>
+
+                {/* Event pills row */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 10,
+                    background: "#FDF6EE", border: `1px solid ${BORDER}`,
+                    borderRadius: 12, padding: "10px 14px",
+                  }}>
+                    <span style={{ fontSize: 18 }}>🪔</span>
+                    <div style={{ textAlign: "left", flex: 1 }}>
+                      <p style={{ fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: MAROON, margin: 0 }}>Marriage Ceremony</p>
+                      <p style={{ fontFamily: "'Cormorant Garant', serif", fontSize: 14, color: TMED, margin: 0 }}>Sivan Temple · 4:00 AM – 6:00 AM</p>
+                    </div>
+                  </div>
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 10,
+                    background: "#FDF6EE", border: `1px solid ${BORDER}`,
+                    borderRadius: 12, padding: "10px 14px",
+                  }}>
+                    <span style={{ fontSize: 18 }}>🌸</span>
+                    <div style={{ textAlign: "left", flex: 1 }}>
+                      <p style={{ fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: MAROON, margin: 0 }}>Reception</p>
+                      <p style={{ fontFamily: "'Cormorant Garant', serif", fontSize: 14, color: TMED, margin: 0 }}>Srinivasa Mandapam · 8:00 AM – 11:00 AM</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Google Maps embed */}
+                <div style={{ width: "100%", height: 200, borderRadius: 12, overflow: "hidden", border: `1px solid ${BORDER}`, marginBottom: 16 }}>
+                  <iframe
+                    src="https://maps.google.com/maps?q=11.4470763,78.4860593&output=embed"
+                    width="100%" height="100%"
+                    style={{ border: 0, display: "block" }}
+                    allowFullScreen loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+
+                <a href="https://maps.app.goo.gl/TmqPPJ9rDaq2NxAEA?g_st=ac" target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+                  <button style={{
+                    width: "100%", background: "#B85940", color: WHITE,
+                    border: "none", borderRadius: 50, padding: "15px",
+                    fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 12,
+                    letterSpacing: 3, textTransform: "uppercase", cursor: "pointer",
+                    transition: "opacity 0.2s",
+                  }}>GET DIRECTIONS</button>
+                </a>
+              </div>
             </div>
           </div>
+
+          {/* ── Venue 2 — Selves Hotel, Thiruvarur ── */}
+          <div className="reveal-scale">
+            <div
+              className="hover-lift"
+              style={{
+                background: WHITE,
+                border: `1px solid ${BORDER}`,
+                borderRadius: 20,
+                overflow: "hidden",
+                boxShadow: "0 4px 28px rgba(44,32,21,0.08)",
+              }}
+            >
+              {/* Decorative header banner */}
+              <div style={{
+                height: 8,
+                background: `linear-gradient(90deg, transparent, ${GOLD}, ${MAROON}, ${GOLD}, transparent)`,
+              }} />
+
+              {/* Venue placeholder visual */}
+              <div style={{
+                height: 160,
+                background: `linear-gradient(160deg, #F5E6D0 0%, #EDD5B0 50%, #E8C890 100%)`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexDirection: "column", gap: 6,
+              }}>
+                <span style={{ fontSize: 48 }}>🏨</span>
+                <p style={{
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: 10, fontWeight: 700, letterSpacing: 3,
+                  textTransform: "uppercase", color: MAROON, margin: 0,
+                }}>Diamond Hall</p>
+              </div>
+
+              <div style={{ padding: "24px 24px 28px", textAlign: "center" }}>
+                {/* Date badge */}
+                <div style={{
+                  display: "inline-block",
+                  background: MAROON, color: WHITE,
+                  borderRadius: 50, padding: "4px 14px",
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: 10, fontWeight: 700,
+                  letterSpacing: 2, textTransform: "uppercase",
+                  marginBottom: 10,
+                }}>29 June 2026</div>
+
+                {/* Venue name */}
+                <h3 style={{
+                  fontFamily: "'Great Vibes', cursive",
+                  fontSize: "clamp(36px, 10vw, 52px)",
+                  fontWeight: 400, color: MAROON,
+                  lineHeight: 1.2, marginBottom: 8,
+                }}>
+                  Selves Hotel
+                </h3>
+
+                {/* Address */}
+                <p style={{
+                  fontFamily: "'Cormorant Garant', serif",
+                  fontStyle: "italic",
+                  fontSize: 15, color: TMED, lineHeight: 1.7, marginBottom: 14,
+                }}>
+                  Near Old Bus Stand<br />
+                  Thiruvarur · 610001
+                </p>
+
+                {/* Event pill */}
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  background: "#FDF6EE", border: `1px solid ${BORDER}`,
+                  borderRadius: 12, padding: "10px 14px",
+                  marginBottom: 20,
+                }}>
+                  <span style={{ fontSize: 18 }}>🌸</span>
+                  <div style={{ textAlign: "left", flex: 1 }}>
+                    <p style={{ fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: MAROON, margin: 0 }}>Reception</p>
+                    <p style={{ fontFamily: "'Cormorant Garant', serif", fontSize: 14, color: TMED, margin: 0 }}>Diamond Hall · Monday, 29 June</p>
+                  </div>
+                </div>
+
+                {/* Google Maps embed */}
+                <div style={{ width: "100%", height: 200, borderRadius: 12, overflow: "hidden", border: `1px solid ${BORDER}`, marginBottom: 16 }}>
+                  <iframe
+                    src="https://maps.google.com/maps?q=Selves+Hotel+Diamond+Hall+Thiruvarur+610001&output=embed"
+                    width="100%" height="100%"
+                    style={{ border: 0, display: "block" }}
+                    allowFullScreen loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+
+                <a href="https://maps.app.goo.gl/y9MLp1JA9AKzTFGc8?g_st=ac" target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+                  <button style={{
+                    width: "100%", background: "#B85940", color: WHITE,
+                    border: "none", borderRadius: 50, padding: "15px",
+                    fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: 12,
+                    letterSpacing: 3, textTransform: "uppercase", cursor: "pointer",
+                    transition: "opacity 0.2s",
+                  }}>GET DIRECTIONS</button>
+                </a>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
